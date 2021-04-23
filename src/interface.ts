@@ -6,5 +6,6 @@ export interface SelectValue {
 export interface State {
     value: SelectValue | null;
     values: SelectValue[];
+    options: SelectValue[];
     multiple: Boolean
 }

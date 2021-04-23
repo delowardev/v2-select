@@ -4,6 +4,7 @@ import type {State} from "./interface";
 const defaultState: State = {
   value: null,
   values: [],
+  options: [],
   multiple: false
 };
 
