@@ -1,9 +1,14 @@
+$height: 38px;
+$radius: 4px;
+$color-grey: #cccccc;
+$color-grey-dark: #999999;
+
 .v2select {
   .v2select__controls {
     background-color: rgb(255, 255, 255);
     border: 1px solid rgb(204, 204, 204);
-    border-radius: 4px;
-    min-height: 38px;
+    border-radius: $radius;
+    min-height: $height;
     position: relative;
     transition: all 100ms ease 0s;
     box-sizing: border-box;
@@ -32,24 +37,41 @@
 
 
 .v2select__buttons {
+  display: inline-flex;
+  align-items: flex-start;
+  height: $height - 2px;
+  align-self: stretch;
   .v2select__btn {
-    margin: 0;
+    cursor: pointer;
+    margin: 0 0 0 1px;
     padding: 0;
     width: 35px;
     border: none;
-    background: red;
-    height: 100%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    height: 100%;
+    border-radius: 0;
+    color: $color-grey;
+    background: none;
+    position: relative;
+    &:hover {
+      color: $color-grey-dark;
+    }
+    &:last-child {
+      border-radius: 0 $radius $radius 0;
+    }
+    &:not(:first-child)::before {
+      content: "";
+      height: 50%;
+      width: 1px;
+      background: $color-grey;
+      left: -1px;
+      position: absolute;
+    }
   }
 }
 
 .v2select__icon {
-  font-size: 16px;
-  svg {
-    height: 1em;
-    width: 1em;
-    display: block;
-  }
+  font-size: 17px;
 }
