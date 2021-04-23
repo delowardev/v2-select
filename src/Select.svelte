@@ -4,12 +4,14 @@
 	import type {State} from "./interface";
 	import ChevronDown from "./components/icons/ChevronDown.svelte";
 	import Times from "./components/icons/Times.svelte";
+	import clsx from "clsx";
 
 	/**
 	 * Props
 	 */
 
 	export let select: HTMLSelectElement;
+	select.style.display = "none";
 
 	/**
 	 * Set initial value
@@ -35,22 +37,46 @@
 
 	const getState = get(state);
 	const getValue = getState.value?.value || "";
-	const className = `v2select ` + (getState.multiple ? `v2select__multiple` : `v2select__single`);
 	let search = "";
+	let selected = false;
 
 	/**
 	 * Functions
 	 */
 
-	function setValue(value) {
+	function _setValue(value) {
 		console.log(value);
+	}
+
+	// function _select() {
+	// 	selected = true;
+	// }
+	//
+	// function _unSelect() {
+	// 	selected = false;
+	// }
+
+	function _toggle() {
+		selected = !selected;
 	}
 
 </script>
 
 <main>
-	<div class={className}>
-		<div class="v2select__controls">
+	<div class={clsx(
+		'v2select',
+		{
+			v2select__multiple: getState.multiple,
+			v2select__single: !getState.multiple
+		}
+	)}>
+		<div
+			on:click={_toggle}
+			class={clsx(
+				'v2select__controls',
+				{ 'v2select__controls--is-selected': selected }
+			)}
+		>
 			<div class="v2select__values">
 				<input class="v2select__search" type="text" bind:value={search}>
 				<div class="v2select__value">{getValue}</div>
@@ -64,13 +90,22 @@
 				</button>
 			</div>
 		</div>
+		{#if selected}
 		<div class="v2select__dropdown">
 			<div class="v2select__dropdown-inner">
 				{#each get(state).options as option}
-					<button class="v2select__dropdown-item" on:click={() => setValue(option.value)}>{option.text}</button>
+					<button
+						class="v2select__dropdown-item"
+						on:click={
+							() => _setValue(option.value)
+						}
+					>
+						{option.text}
+					</button>
 				{/each}
 			</div>
 		</div>
+		{/if}
 	</div>
 </main>
 

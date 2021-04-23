@@ -2,8 +2,11 @@ $height: 38px;
 $radius: 4px;
 $color-grey: #cccccc;
 $color-grey-dark: #999999;
+$color-primary: #2684FC;
 
 .v2select {
+  position: relative;
+  text-align: left;
   .v2select__controls {
     background-color: rgb(255, 255, 255);
     border: 1px solid rgb(204, 204, 204);
@@ -16,6 +19,12 @@ $color-grey-dark: #999999;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    &.v2select__controls--is-selected {
+      border-color: $color-primary;
+      box-shadow: $color-primary 0 0 0 1px;
+    }
+
     .v2select__values {
       display: flex;
       align-items: center;
@@ -33,6 +42,37 @@ $color-grey-dark: #999999;
   // Single
 
   // multiple
+}
+
+.v2select__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  background: white;
+  border: 1px solid $color-grey;
+  margin-top: 5px;
+  border-radius: $radius;
+  box-sizing: border-box;
+  box-shadow: 0 0 10px rgba(black, .1);
+  padding: 4px 0;
+  .v2select__dropdown-inner {
+    button {
+      margin: 0;
+      background: none;
+      border: none;
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 0;
+      &:hover {
+        color: white;
+        background: $color-primary;
+      }
+    }
+  }
 }
 
 
