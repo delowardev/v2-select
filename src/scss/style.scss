@@ -1,18 +1,55 @@
 .v2select {
   .v2select__controls {
-    align-items: center;
     background-color: rgb(255, 255, 255);
     border: 1px solid rgb(204, 204, 204);
     border-radius: 4px;
-    display: flex;
-    justify-content: space-between;
     min-height: 38px;
     position: relative;
     transition: all 100ms ease 0s;
     box-sizing: border-box;
     outline: 0 !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .v2select__values {
+      display: flex;
+      align-items: center;
+      padding: 2px 8px;
+      .v2select__search {
+        margin: 0;
+        padding: 0;
+        border: none;
+        outline: none;
+        width: 2px;
+        background: red;
+      }
+    }
   }
   // Single
 
   // multiple
+}
+
+
+.v2select__buttons {
+  .v2select__btn {
+    margin: 0;
+    padding: 0;
+    width: 35px;
+    border: none;
+    background: red;
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.v2select__icon {
+  font-size: 16px;
+  svg {
+    height: 1em;
+    width: 1em;
+    display: block;
+  }
 }
