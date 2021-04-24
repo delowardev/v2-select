@@ -1,12 +1,12 @@
 <script lang="ts">
 	import {get} from "svelte/store";
 	import state from "./store";
-	import type {State} from "./interface";
+	import type { State } from "./interface";
 	import ChevronDown from "./components/icons/ChevronDown.svelte";
 	import Times from "./components/icons/Times.svelte";
 	import clsx from "clsx";
 	import { offClick } from "./helper";
-	import {onMount} from "svelte";
+	import { onMount } from "svelte";
 
 	/**
 	 * Props
@@ -19,10 +19,10 @@
 	 * Set initial value
 	 */
 	state.update((prevState): State => {
-		const _options: HTMLCollectionOf<HTMLOptionElement> = select.selectedOptions;
-		const options = Array.from(select.options).map(({value, text}) => ({value, text}));
-		const values = Array.from(_options).map(({value, text}) => ({value, text}));
-		const value = values[0] || options[0];
+		const options = Array.from(select.options).map(({value, text, disabled}) => ({value, text, disabled}));
+		const selectedOptions: HTMLCollectionOf<HTMLOptionElement> = select.selectedOptions;
+		const values = Array.from(selectedOptions).map(({value}) => value);
+		const value = values[0] || options[0].value;
 		const multiple = select.multiple;
 		return {
 			...prevState,
@@ -38,7 +38,7 @@
 	 */
 
 	const getState = get(state);
-	const getValue = getState.value?.value || "";
+	const getValue = getState.value;
 	let search = "";
 	let open = false;
 	let root;

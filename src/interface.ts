@@ -1,11 +1,12 @@
-export interface SelectValue {
+export interface SelectOption {
     text: String;
     value: String;
+    disabled?: Boolean;
 }
 
 export interface State {
-    value: SelectValue | null;
-    values: SelectValue[];
-    options: SelectValue[];
+    value: String;
+    values: String[];
+    options: SelectOption[];
     multiple: Boolean
 }

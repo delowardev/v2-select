@@ -4,8 +4,8 @@
     <list default="true" id="ef8d04b9-ca0e-44b8-8e8f-0c820f1f4d6f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Select.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/Select.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/helper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scss/style.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/scss/style.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interface.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/store.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +50,7 @@
       <workItem from="1619183367043" duration="6000" />
       <workItem from="1619183379971" duration="2317000" />
       <workItem from="1619203481861" duration="3058000" />
-      <workItem from="1619206554537" duration="7650000" />
+      <workItem from="1619206554537" duration="8079000" />
     </task>
     <servers />
   </component>

@@ -1,8 +1,8 @@
 import { writable } from 'svelte/store';
-import type {State} from "./interface";
+import type { State } from "./interface";
 
 const defaultState: State = {
-  value: null,
+  value: "",
   values: [],
   options: [],
   multiple: false
