@@ -2,47 +2,10 @@ $height: 38px;
 $radius: 4px;
 $color-grey: #cccccc;
 $color-grey-dark: #999999;
+$color-grey-darker: #666666;
 $color-primary: #2684FC;
+$transition: 200ms;
 
-.v2select {
-  position: relative;
-  text-align: left;
-  .v2select__controls {
-    background-color: rgb(255, 255, 255);
-    border: 1px solid rgb(204, 204, 204);
-    border-radius: $radius;
-    min-height: $height;
-    position: relative;
-    transition: all 100ms ease 0s;
-    box-sizing: border-box;
-    outline: 0 !important;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    &.v2select__controls--is-selected {
-      border-color: $color-primary;
-      box-shadow: $color-primary 0 0 0 1px;
-    }
-
-    .v2select__values {
-      display: flex;
-      align-items: center;
-      padding: 2px 8px;
-      .v2select__search {
-        margin: 0;
-        padding: 0;
-        border: none;
-        outline: none;
-        width: 2px;
-        background: red;
-      }
-    }
-  }
-  // Single
-
-  // multiple
-}
 
 .v2select__dropdown {
   position: absolute;
@@ -67,6 +30,7 @@ $color-primary: #2684FC;
       text-align: left;
       padding: 8px 10px;
       border-radius: 0;
+      transition: $transition;
       &:hover {
         color: white;
         background: $color-primary;
@@ -95,6 +59,7 @@ $color-primary: #2684FC;
     color: $color-grey;
     background: none;
     position: relative;
+    transition: $transition;
     &:hover {
       color: $color-grey-dark;
     }
@@ -114,4 +79,47 @@ $color-primary: #2684FC;
 
 .v2select__icon {
   font-size: 17px;
+}
+
+.v2select {
+  position: relative;
+  text-align: left;
+  .v2select__controls {
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: $radius;
+    min-height: $height;
+    position: relative;
+    box-sizing: border-box;
+    outline: 0 !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: $transition;
+
+    &.v2select__controls--is-selected {
+      border-color: $color-primary;
+      box-shadow: $color-primary 0 0 0 1px;
+      .v2select__buttons .v2select__btn {
+        color: $color-grey-darker;
+      }
+    }
+
+    .v2select__values {
+      display: flex;
+      align-items: center;
+      padding: 2px 8px;
+      .v2select__search {
+        margin: 0;
+        padding: 0;
+        border: none;
+        outline: none;
+        width: 2px;
+        background: red;
+      }
+    }
+  }
+  // Single
+
+  // multiple
 }

@@ -5,6 +5,8 @@
 	import ChevronDown from "./components/icons/ChevronDown.svelte";
 	import Times from "./components/icons/Times.svelte";
 	import clsx from "clsx";
+	import { offClick } from "./helper";
+	import {onMount} from "svelte";
 
 	/**
 	 * Props
@@ -38,7 +40,8 @@
 	const getState = get(state);
 	const getValue = getState.value?.value || "";
 	let search = "";
-	let selected = false;
+	let open = false;
+	let root;
 
 	/**
 	 * Functions
@@ -56,14 +59,29 @@
 	// 	selected = false;
 	// }
 
-	function _toggle() {
-		selected = !selected;
+	function _open() {
+		open = true;
+		offClick(root, ".v2select", () => {
+			_close();
+		});
 	}
+
+	function _close() {
+		open = false;
+	}
+
+	/**
+	 * Lifecycle
+	 */
+
+	onMount(() => {
+
+	})
 
 </script>
 
 <main>
-	<div class={clsx(
+	<div bind:this={root} class={clsx(
 		'v2select',
 		{
 			v2select__multiple: getState.multiple,
@@ -71,10 +89,10 @@
 		}
 	)}>
 		<div
-			on:click={_toggle}
+			on:click|stopPropagation={_open}
 			class={clsx(
 				'v2select__controls',
-				{ 'v2select__controls--is-selected': selected }
+				{ 'v2select__controls--is-selected': open }
 			)}
 		>
 			<div class="v2select__values">
@@ -90,7 +108,7 @@
 				</button>
 			</div>
 		</div>
-		{#if selected}
+		{#if open}
 		<div class="v2select__dropdown">
 			<div class="v2select__dropdown-inner">
 				{#each get(state).options as option}
