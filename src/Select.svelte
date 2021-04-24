@@ -5,7 +5,6 @@
 	import ChevronDown from "./components/icons/ChevronDown.svelte";
 	import Times from "./components/icons/Times.svelte";
 	import clsx from "clsx";
-	import { offClick } from "./helper";
 	import { onMount } from "svelte";
 
 	/**
@@ -15,9 +14,25 @@
 	export let select: HTMLSelectElement;
 	select.style.display = "none";
 
+
 	/**
-	 * Set initial value
+	 * Variables
 	 */
+
+	const getState = get(state);
+	let search = "";
+	let open = false;
+	let root;
+	let value = getState.value;
+
+	/**
+	 * Store
+	 */
+
+	state.subscribe( ( data: State): void => {
+		value = data.options.find(option => option.value === data.value)?.text;
+	})
+
 	state.update((prevState): State => {
 		const options = Array.from(select.options).map(({value, text, disabled}) => ({value, text, disabled}));
 		const selectedOptions: HTMLCollectionOf<HTMLOptionElement> = select.selectedOptions;
@@ -34,36 +49,20 @@
 	});
 
 	/**
-	 * Variables
-	 */
-
-	const getState = get(state);
-	const getValue = getState.value;
-	let search = "";
-	let open = false;
-	let root;
-
-	/**
 	 * Functions
 	 */
 
-	function _setValue(value) {
-		console.log(value);
+	function _select(value) {
+		state.update((prevState: State): State => {
+			return {
+				...prevState,
+				value: value
+			}
+		})
 	}
-
-	// function _select() {
-	// 	selected = true;
-	// }
-	//
-	// function _unSelect() {
-	// 	selected = false;
-	// }
 
 	function _open() {
 		open = true;
-		offClick(root, ".v2select", () => {
-			_close();
-		});
 	}
 
 	function _close() {
@@ -73,10 +72,6 @@
 	/**
 	 * Lifecycle
 	 */
-
-	onMount(() => {
-
-	})
 
 </script>
 
@@ -97,7 +92,7 @@
 		>
 			<div class="v2select__values">
 				<input class="v2select__search" type="text" bind:value={search}>
-				<div class="v2select__value">{getValue}</div>
+				<div class="v2select__value">{value}</div>
 			</div>
 			<div class="v2select__buttons">
 				<button class="v2select__times v2select__icon v2select__btn">
@@ -115,7 +110,7 @@
 					<button
 						class="v2select__dropdown-item"
 						on:click={
-							() => _setValue(option.value)
+							() => _select(option.value)
 						}
 					>
 						{option.text}
