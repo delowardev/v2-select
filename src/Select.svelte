@@ -4,6 +4,7 @@
 	import Times from "./components/icons/Times.svelte";
 	import type { State } from "./interface";
 	import store from "./store";
+	import {findText} from "./helper"
 
 
 	/**
@@ -28,16 +29,19 @@
 	let search = "";
 	let open = false;
 	let root: HTMLDivElement;
-	let value = getState.value;
-	let options = getState.options;
+	let value = state.data.value;
+	let options = state.data.options;
+	let text = findText(options, state.data.value);
 
 	/**
 	 * Store
 	 */
 
-	state.subscribe( ( data: State): void => {
-		value = data.options.find(option => option.value === data.value)?.text;
+	state.subscribe( ( data: any): void => {
+		value = data.options.find(option => option.value === data.value)?.value;
 		options = data.options;
+		console.log(data);
+		text = findText(options, value);
 	})
 
 	state.update((prevState): State => {
@@ -61,6 +65,7 @@
 
 	function _select(value) {
 		state.setValue(value);
+		console.log(value)
 		_close();
 	}
 
@@ -95,7 +100,7 @@
 		>
 			<div class="v2select__values">
 				<input class="v2select__search" type="text" bind:value={search}>
-				<div class="v2select__value">{value}</div>
+				<div class="v2select__value">{text}</div>
 			</div>
 			<div class="v2select__buttons">
 				<button class="v2select__times v2select__icon v2select__btn">

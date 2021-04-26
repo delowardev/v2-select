@@ -1,3 +1,5 @@
+import type { SelectOption } from "./interface"
+
 export function offClick (elementToCompare: HTMLElement, selector: any, callback: Function): void {
     if (!document) return;
 
@@ -11,4 +13,8 @@ export function offClick (elementToCompare: HTMLElement, selector: any, callback
     }
 
     document.addEventListener("click" , clickEvent, false)
+}
+
+export function findText(options: SelectOption[], value: String): String {
+    return options.find((option: SelectOption): Boolean => option.value === value)?.text || "";
 }
