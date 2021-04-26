@@ -26,14 +26,19 @@ $transition: 200ms;
       background: none;
       border: none;
       display: block;
-      width: 100%;
+      width: calc(100% + 2px);
+      margin-left: -1px;
       text-align: left;
       padding: 8px 10px;
       border-radius: 0;
       transition: $transition;
-      &:hover {
+      cursor: pointer;
+      &.v2select__dropdown--selected {
         color: white;
         background: $color-primary;
+      }
+      &:hover {
+        background: rgba($color-primary, .2);
       }
     }
   }

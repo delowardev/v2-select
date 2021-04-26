@@ -1,11 +1,17 @@
 <script lang="ts">
-	import {get} from "svelte/store";
-	import state from "./store";
-	import type { State } from "./interface";
+	import clsx from "clsx";
 	import ChevronDown from "./components/icons/ChevronDown.svelte";
 	import Times from "./components/icons/Times.svelte";
-	import clsx from "clsx";
-	import { onMount } from "svelte";
+	import type { State } from "./interface";
+	import store from "./store";
+
+
+
+
+	const state = store();
+
+
+
 
 	/**
 	 * Props
@@ -19,11 +25,12 @@
 	 * Variables
 	 */
 
-	const getState = get(state);
+	const getState = state.data;
 	let search = "";
 	let open = false;
-	let root;
+	let root: HTMLDivElement;
 	let value = getState.value;
+	let options = getState.options;
 
 	/**
 	 * Store
@@ -31,6 +38,7 @@
 
 	state.subscribe( ( data: State): void => {
 		value = data.options.find(option => option.value === data.value)?.text;
+		options = data.options;
 	})
 
 	state.update((prevState): State => {
@@ -59,6 +67,7 @@
 				value: value
 			}
 		})
+		_close();
 	}
 
 	function _open() {
@@ -106,9 +115,14 @@
 		{#if open}
 		<div class="v2select__dropdown">
 			<div class="v2select__dropdown-inner">
-				{#each get(state).options as option}
+				{#each options as option}
 					<button
-						class="v2select__dropdown-item"
+						class={clsx(
+							'v2select__dropdown-item',
+							{
+								'v2select__dropdown--selected': option.value === value
+							}
+						)}
 						on:click={
 							() => _select(option.value)
 						}
