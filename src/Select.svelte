@@ -37,12 +37,8 @@
 	 * Store
 	 */
 
-	state.subscribe( ( data: any): void => {
-		value = data.options.find(option => option.value === data.value)?.value;
-		options = data.options;
-		console.log(data);
-		text = findText(options, value);
-	})
+
+	state.subscribe(onSubscribe);
 
 	state.update((prevState): State => {
 		const options = Array.from(select.options).map(({value, text, disabled}) => ({value, text, disabled}));
@@ -62,6 +58,12 @@
 	/**
 	 * Functions
 	 */
+
+	function onSubscribe(data: State): void {
+		value = data.value;
+		options = data.options;
+		text = findText(options, value);
+	}
 
 	function _select(value) {
 		state.setValue(value);

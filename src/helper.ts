@@ -18,3 +18,4 @@ export function offClick (elementToCompare: HTMLElement, selector: any, callback
 export function findText(options: SelectOption[], value: String): String {
     return options.find((option: SelectOption): Boolean => option.value === value)?.text || "";
 }
+
