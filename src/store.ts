@@ -8,23 +8,31 @@ const defaultState: State = {
   multiple: false
 };
 
-// export default writable(defaultState)
-
 
 function createStore(): {
   update: Function,
   subscribe: Function,
+  setValue: Function,
   data: State
 } {
   const store = writable(defaultState);
+  const state = get(store);
 
-  console.log(store)
+  function setValue(value: String): void {
+    if (state.value !== value) {
+      store.update((prevState: State) => ({
+        ...prevState,
+        value
+      }))
+    }
+  }
 
 
   return {
     update: store.update,
     subscribe: store.subscribe,
-    data: get(store) as State
+    setValue,
+    data: state as State
   }
 
 }

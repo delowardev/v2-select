@@ -6,12 +6,11 @@
 	import store from "./store";
 
 
-
+	/**
+	 * Constant
+	*/
 
 	const state = store();
-
-
-
 
 	/**
 	 * Props
@@ -61,12 +60,7 @@
 	 */
 
 	function _select(value) {
-		state.update((prevState: State): State => {
-			return {
-				...prevState,
-				value: value
-			}
-		})
+		state.setValue(value);
 		_close();
 	}
 
