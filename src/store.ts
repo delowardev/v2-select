@@ -1,25 +1,29 @@
 import { get, writable } from 'svelte/store';
 import type { State, SelectOption } from "./interface";
 
-const defaultState: State = {
+const _state: State = {
   value: "",
   values: [],
   options: [],
   multiple: false
 };
 
+interface StoreDaddy {
+  update: Function;
+  subscribe: Function;
+  data: State;
+  setValue: Function;
+}
 
-function createStore(): {
-  update: Function,
-  subscribe: Function,
-  setValue: Function,
-  data: State
-} {
-  const store = writable(defaultState);
-  const state = get(store);
+function createStore(): StoreDaddy {
+  const store = writable(_state);
+
+  function state(): State {
+    return get(store); // always get latest value
+  };
 
   function setValue(value: String): void {
-    if (state.value !== value) {
+    if (state().value !== value) {
       store.update((prevState: State) => ({
         ...prevState,
         value
@@ -28,7 +32,7 @@ function createStore(): {
   }
 
   function addOption(option: SelectOption) {
-    const options = JSON.parse(JSON.stringify(state.options));
+    const options = JSON.parse(JSON.stringify(state().options));
     options.push(option);
     store.update((prevState: State) => ({
       ...prevState,
@@ -37,7 +41,7 @@ function createStore(): {
   }
 
   function addOptions(options_: SelectOption[], clean: false) {
-    const options = clean ? [] : JSON.parse(JSON.stringify(state.options));
+    const options = clean ? [] : JSON.parse(JSON.stringify(state().options));
     options.push(...options_);
     store.update((prevState: State) => ({
       ...prevState,
@@ -50,7 +54,7 @@ function createStore(): {
     update: store.update,
     subscribe: store.subscribe,
     setValue,
-    data: state as State
+    data: state()
   }
 
 }
