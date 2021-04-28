@@ -8,7 +8,7 @@ const _state: State = {
   multiple: false
 };
 
-function createStore(): StoreDaddy {
+export function createStore(): StoreDaddy {
   const store = writable(_state);
 
   function state(): State {
@@ -63,7 +63,7 @@ function createStore(): StoreDaddy {
   return {
     update: store.update,
     subscribe: store.subscribe,
-    data: state(),
+    data: store,
     setValue,
     addOption,
     addOptions,
@@ -72,6 +72,3 @@ function createStore(): StoreDaddy {
   }
 
 }
-
-
-export default createStore

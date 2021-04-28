@@ -3,8 +3,8 @@
 	import ChevronDown from "./components/icons/ChevronDown.svelte";
 	import Times from "./components/icons/Times.svelte";
 	import { findText } from "./helper";
-	import type { SelectOption,State,StoreDaddy } from "./interface";
-	import store from "./store";
+	import type { SelectOption, State } from "./interface";
+	import { createStore } from "./store";
 
 
 
@@ -12,7 +12,7 @@
 	 * Constant
 	*/
 
-	const state: StoreDaddy = store();
+	const state = createStore();
 
 	/**
 	 * Props
@@ -32,13 +32,18 @@
 	let root: HTMLDivElement;
 	let value = state.data.value;
 	let options = state.data.options;
-	let text = findText(options, state.data.value);
+	let text = ""; //findText(options, state.data.value);
 
 	/**
 	 * Store
 	 */
 
-	state.subscribe(onSubscribe);
+	state.subscribe((state) => {
+		console.log(state);
+		if (state.options && state.value) {
+			onSubscribe(state);
+		}
+	});
 	state.addOptions(getInitialSelectOptions(), true);
 	state.setValue(getInitialValues()[0])
 	state.setValues(getInitialValues())
@@ -117,22 +122,24 @@
 		{#if open}
 		<div class="v2select__dropdown">
 			<div class="v2select__dropdown-inner">
-				{#each options as option}
-					<button
-						class={clsx(
-							'v2select__dropdown-item',
-							{
-								'v2select__dropdown--selected': option.value === value,
-								'v2select__dropdown--is-disabled': option.disabled === true
+				{#if Array.isArray(options)}
+					{#each options as option}
+						<button
+							class={clsx(
+								'v2select__dropdown-item',
+								{
+									'v2select__dropdown--selected': option.value === value,
+									'v2select__dropdown--is-disabled': option.disabled === true
+								}
+							)}
+							on:click={
+								() => option.disabled ? null : _select(option.value)
 							}
-						)}
-						on:click={
-							() => option.disabled ? null : _select(option.value)
-						}
-					>
-						{option.text}
-					</button>
-				{/each}
+						>
+							{option.text}
+						</button>
+					{/each}
+				{/if}
 			</div>
 		</div>
 		{/if}

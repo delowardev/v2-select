@@ -14,7 +14,7 @@ export interface State {
 export interface StoreDaddy {
     update: Function;
     subscribe: Function;
-    data: State;
+    data: any;
     setValue: Function;
     addOption: Function;
     addOptions: Function;
