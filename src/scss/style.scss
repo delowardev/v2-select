@@ -33,12 +33,16 @@ $transition: 200ms;
       border-radius: 0;
       transition: $transition;
       cursor: pointer;
-      &:hover {
+      &:not(.v2select__dropdown--is-disabled):hover {
         background: rgba($color-primary, .2);
       }
       &.v2select__dropdown--selected {
         color: white;
         background: $color-primary;
+      }
+      &.v2select__dropdown--is-disabled {
+        opacity: .4;
+        cursor: default;
       }
     }
   }

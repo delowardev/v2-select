@@ -121,11 +121,12 @@
 						class={clsx(
 							'v2select__dropdown-item',
 							{
-								'v2select__dropdown--selected': option.value === value
+								'v2select__dropdown--selected': option.value === value,
+								'v2select__dropdown--is-disabled': option.disabled === true
 							}
 						)}
 						on:click={
-							() => _select(option.value)
+							() => option.disabled ? null : _select(option.value)
 						}
 					>
 						{option.text}
