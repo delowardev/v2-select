@@ -2,16 +2,17 @@
 	import clsx from "clsx";
 	import ChevronDown from "./components/icons/ChevronDown.svelte";
 	import Times from "./components/icons/Times.svelte";
-	import type { State } from "./interface";
+	import { findText } from "./helper";
+	import type { SelectOption,State,StoreDaddy } from "./interface";
 	import store from "./store";
-	import {findText} from "./helper"
+
 
 
 	/**
 	 * Constant
 	*/
 
-	const state = store();
+	const state: StoreDaddy = store();
 
 	/**
 	 * Props
@@ -25,7 +26,7 @@
 	 * Variables
 	 */
 
-	const getState = state.data;
+	const getState = state.data as State;
 	let search = "";
 	let open = false;
 	let root: HTMLDivElement;
@@ -37,27 +38,27 @@
 	 * Store
 	 */
 
-
 	state.subscribe(onSubscribe);
-
-	state.update((prevState): State => {
-		const options = Array.from(select.options).map(({value, text, disabled}) => ({value, text, disabled}));
-		const selectedOptions: HTMLCollectionOf<HTMLOptionElement> = select.selectedOptions;
-		const values = Array.from(selectedOptions).map(({value}) => value);
-		const value = values[0] || options[0].value;
-		const multiple = select.multiple;
-		return {
-			...prevState,
-			value,
-			values,
-			options,
-			multiple
-		}
-	});
+	state.addOptions(getInitialSelectOptions(), true);
+	state.setValue(getInitialValues()[0])
+	state.setValues(getInitialValues())
+	state.setMultiple(select.multiple)
 
 	/**
 	 * Functions
 	 */
+
+	function getInitialSelectedOptions(): HTMLCollectionOf<HTMLOptionElement> {
+		return select.selectedOptions;
+	}
+
+	function getInitialSelectOptions(): SelectOption[] {
+		return Array.from(select.options).map(({value, text, disabled}) => ({value, text, disabled}));
+	}
+
+	function getInitialValues(): String[] {
+		return Array.from(getInitialSelectedOptions()).map(({value}) => value);
+	}
 
 	function onSubscribe(data: State): void {
 		value = data.value;

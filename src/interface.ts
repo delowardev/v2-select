@@ -10,3 +10,14 @@ export interface State {
     options: SelectOption[];
     multiple: Boolean
 }
+
+export interface StoreDaddy {
+    update: Function;
+    subscribe: Function;
+    data: State;
+    setValue: Function;
+    addOption: Function;
+    addOptions: Function;
+    setValues: Function;
+    setMultiple: Function;
+}

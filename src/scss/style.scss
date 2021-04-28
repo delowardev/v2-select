@@ -33,7 +33,7 @@ $transition: 200ms;
       border-radius: 0;
       transition: $transition;
       cursor: pointer;
-      &:not(.v2select__dropdown--is-disabled):hover {
+      &:not(.v2select__dropdown--is-disabled):not(.v2select__dropdown--selected):hover {
         background: rgba($color-primary, .2);
       }
       &.v2select__dropdown--selected {

@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store';
-import type { State, SelectOption } from "./interface";
+import type { State, SelectOption, StoreDaddy } from "./interface";
 
 const _state: State = {
   value: "",
@@ -8,28 +8,12 @@ const _state: State = {
   multiple: false
 };
 
-interface StoreDaddy {
-  update: Function;
-  subscribe: Function;
-  data: State;
-  setValue: Function;
-}
-
 function createStore(): StoreDaddy {
   const store = writable(_state);
 
   function state(): State {
     return get(store); // always get latest value
   };
-
-  function setValue(value: String): void {
-    if (state().value !== value) {
-      store.update((prevState: State) => ({
-        ...prevState,
-        value
-      }))
-    }
-  }
 
   function addOption(option: SelectOption) {
     const options = JSON.parse(JSON.stringify(state().options));
@@ -50,11 +34,41 @@ function createStore(): StoreDaddy {
   }
 
 
+  function setValue(value: String): void {
+    if (state().value !== value) {
+      store.update((prevState: State) => ({
+        ...prevState,
+        value
+      }))
+    }
+  }
+
+  function setValues(values: String[]) {
+    store.update((prevState: State) => ({
+      ...prevState,
+      values
+    }))
+  }
+
+  function setMultiple( multiple = true) {
+    if(state().multiple !== multiple) {
+      store.update((prevState: State) => ({
+        ...prevState,
+        multiple
+      }))
+    }
+  }
+
+
   return {
     update: store.update,
     subscribe: store.subscribe,
+    data: state(),
     setValue,
-    data: state()
+    addOption,
+    addOptions,
+    setValues,
+    setMultiple
   }
 
 }
