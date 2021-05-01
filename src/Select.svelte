@@ -92,13 +92,11 @@
 	}
 
 	function _select(value) {
-
 		if (multiple) {
 			appendValue(value);
-		} else {
-			setValue(value);
+			return;
 		}
-
+		setValue(value);
 		_close();
 	}
 
@@ -108,7 +106,6 @@
 
 	function _toggle() {
 		open = !open;
-		console.log('aaaa')
 	}
 
 	function _clearByIndex(index) {
@@ -148,7 +145,7 @@
 							{#each values as val, i}
 								<div class="v2select__multi-value">
 									<span class="v2select__multi-label">{ findText(options, val) }</span>
-									<button on:click={() => _clearByIndex(i)} class="v2select__multi-close"><Times /></button>
+									<button on:click|stopPropagation|capture={() => _clearByIndex(i)} class="v2select__multi-close"><Times /></button>
 								</div>
 							{/each}
 						</div>
@@ -167,7 +164,7 @@
 				<button on:click={_clearValues} class="v2select__times v2select__icon v2select__btn">
 					<Times />
 				</button>
-				<button on:click={_toggle} class="v2select__arrow v2select__icon v2select__btn">
+				<button on:click|stopPropagation|capture={_toggle} class="v2select__arrow v2select__icon v2select__btn">
 					<ChevronDown />
 				</button>
 			</div>

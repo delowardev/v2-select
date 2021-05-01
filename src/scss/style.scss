@@ -7,6 +7,7 @@ $color-grey-darker: #666666;
 $color-primary: #2684FC;
 $transition: 200ms;
 $color-text: #333333;
+$color-placeholder: #808080;
 
 $danger: #de350b;
 $danger-light: #ffbdad;
@@ -96,7 +97,6 @@ $danger-light: #ffbdad;
 }
 
 .v2select {
-  font-size: 16px;
   font-weight: 400;
   position: relative;
   text-align: left;
@@ -120,6 +120,11 @@ $danger-light: #ffbdad;
       .v2select__buttons .v2select__btn {
         color: $color-grey-darker;
       }
+    }
+
+    .v2select__placeholder {
+      color: $color-placeholder;
+      margin: 0 2px;
     }
 
     .v2select__values {
