@@ -23,17 +23,16 @@ $danger-light: #ffbdad;
   border: 1px solid $color-grey;
   margin-top: 5px;
   border-radius: $radius;
-  box-sizing: border-box;
   box-shadow: 0 0 10px rgba(black, .1);
   padding: 4px 0;
   .v2select__dropdown-inner {
-    button {
-      margin: 0;
+    .v2select__dropdown-placeholder,
+    .v2select__dropdown-item {
+      margin: 0 0 0 -1px;
       background: none;
       border: none;
       display: block;
       width: calc(100% + 2px);
-      margin-left: -1px;
       text-align: left;
       padding: 8px 10px;
       border-radius: 0;
@@ -50,6 +49,11 @@ $danger-light: #ffbdad;
         opacity: .4;
         cursor: default;
       }
+    }
+    .v2select__dropdown-placeholder {
+      pointer-events: none;
+      color: $color-placeholder;
+      text-align: center;
     }
   }
 }
@@ -96,6 +100,10 @@ $danger-light: #ffbdad;
   font-size: 17px;
 }
 
+.v2select * {
+  box-sizing: border-box;
+}
+
 .v2select {
   font-weight: 400;
   position: relative;
@@ -106,7 +114,6 @@ $danger-light: #ffbdad;
     border-radius: $radius;
     min-height: $height;
     position: relative;
-    box-sizing: border-box;
     outline: 0 !important;
     display: flex;
     justify-content: space-between;
@@ -145,7 +152,6 @@ $danger-light: #ffbdad;
       .v2select__single-value {
         margin: 0 2px;
         max-width: calc(100% - 8px);
-        box-sizing: border-box;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

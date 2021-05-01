@@ -172,7 +172,7 @@
 		{#if open}
 		<div class="v2select__dropdown">
 			<div class="v2select__dropdown-inner">
-				{#if Array.isArray(filteredOptions)}
+				{#if Array.isArray(filteredOptions) && filteredOptions.length}
 					{#each filteredOptions as option}
 						<button
 							class={clsx(
@@ -189,6 +189,8 @@
 							{option.text}
 						</button>
 					{/each}
+				{:else}
+					<span class="v2select__dropdown-placeholder">No Options</span>
 				{/if}
 			</div>
 		</div>
