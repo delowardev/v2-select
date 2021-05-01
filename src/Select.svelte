@@ -116,9 +116,12 @@
 			<div class="v2select__values">
 				<input class="v2select__search" type="text" bind:value={search}>
 				{#if multiple}
-					<div class="v2select__values">
+					<div class="v2select__multi-values">
 						{#each values as val}
-							<div class="v2select__multi-value">{ findText(options, val) }</div>
+							<div class="v2select__multi-value">
+								<span class="v2select__multi-label">{ findText(options, val) }</span>
+								<button class="v2select__multi-close"><Times /></button>
+							</div>
 						{/each}
 					</div>
 				{:else }
