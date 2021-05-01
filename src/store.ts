@@ -11,9 +11,23 @@ const _state: State = {
 export function createStore(): StoreDaddy {
   const store = writable(_state);
 
+  /**
+   * Store Getter
+   */
+
   function state(): State {
     return get(store); // always get latest value
   };
+
+  function getFilteredOptions() {
+    const { values, options } = state();
+    return options.filter(option => !values.includes(option.value));
+  }
+
+
+  /**
+   * Store Mutation/Setter
+   */
 
   function addOption(option: SelectOption) {
     const options = JSON.parse(JSON.stringify(state().options));
@@ -75,13 +89,12 @@ export function createStore(): StoreDaddy {
   }
 
   function clearByIndex(index) {
-    const { values: _values } = state();
-    const _value = _values[index];
-    if (_value) {
-      _values.splice(index, 1);
+    const { values } = state();
+    if (values[index]) {
+      values.splice(index, 1);
       store.update((prevState: State) => ({
         ...prevState,
-        values: _values
+        values
       }))
     }
   }
@@ -97,7 +110,8 @@ export function createStore(): StoreDaddy {
     setValues,
     setMultiple,
     appendValue,
-    clearByIndex
+    clearByIndex,
+    getFilteredOptions
   }
 
 }

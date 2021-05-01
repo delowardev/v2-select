@@ -20,7 +20,8 @@
 		setValues,
 		setMultiple,
 		appendValue,
-		clearByIndex
+		clearByIndex,
+		getFilteredOptions
 	} = createStore();
 
 	/**
@@ -43,6 +44,7 @@
 	let text = "";
 	let multiple = false;
 	let values = [];
+	let filteredOptions = [];
 
 	/**
 	 * Store
@@ -82,9 +84,10 @@
 
 		value = _value ? _value : "";
 		values = _values ? _values : [];
-		options = _options ? _options : [];
 		multiple = _multiple;
-		text = value && options ? findText(options, value) : "";
+		options = _options ? _options : [];
+		filteredOptions = multiple ? getFilteredOptions() : _options;
+		text = value && options ? findText(_options, value) : "";
 	}
 
 	function _select(value) {
@@ -158,8 +161,8 @@
 		{#if open}
 		<div class="v2select__dropdown">
 			<div class="v2select__dropdown-inner">
-				{#if Array.isArray(options)}
-					{#each options as option}
+				{#if Array.isArray(filteredOptions)}
+					{#each filteredOptions as option}
 						<button
 							class={clsx(
 								'v2select__dropdown-item',
