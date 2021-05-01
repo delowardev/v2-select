@@ -99,6 +99,14 @@ export function createStore(): StoreDaddy {
     }
   }
 
+  function clearValues() {
+    store.update((prevState: State) => ({
+      ...prevState,
+      value: "",
+      values: []
+    }))
+  }
+
 
   return {
     update: store.update,
@@ -111,7 +119,8 @@ export function createStore(): StoreDaddy {
     setMultiple,
     appendValue,
     clearByIndex,
-    getFilteredOptions
+    getFilteredOptions,
+    clearValues
   }
 
 }

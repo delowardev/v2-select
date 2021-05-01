@@ -21,7 +21,8 @@
 		setMultiple,
 		appendValue,
 		clearByIndex,
-		getFilteredOptions
+		getFilteredOptions,
+		clearValues
 	} = createStore();
 
 	/**
@@ -109,8 +110,18 @@
 		open = false;
 	}
 
+	function _toggle() {
+		open = !open;
+		console.log('aaaa')
+	}
+
 	function _clearByIndex(index) {
 		clearByIndex(index);
+	}
+
+	function _clearValues() {
+		clearValues();
+		_close();
 	}
 
 	/**
@@ -128,13 +139,12 @@
 		}
 	)}>
 		<div
-			on:click|stopPropagation={_open}
 			class={clsx(
 				'v2select__controls',
 				{ 'v2select__controls--is-selected': open }
 			)}
 		>
-			<div class="v2select__values">
+			<div on:click|stopPropagation={_open} class="v2select__values">
 				<input class="v2select__search" type="text" bind:value={search}>
 				{#if multiple}
 					<div class="v2select__multi-values">
@@ -150,10 +160,10 @@
 				{/if}
 			</div>
 			<div class="v2select__buttons">
-				<button class="v2select__times v2select__icon v2select__btn">
+				<button on:click={_clearValues} class="v2select__times v2select__icon v2select__btn">
 					<Times />
 				</button>
-				<button class="v2select__arrow v2select__icon v2select__btn">
+				<button on:click={_toggle} class="v2select__arrow v2select__icon v2select__btn">
 					<ChevronDown />
 				</button>
 			</div>

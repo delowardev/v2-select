@@ -23,4 +23,5 @@ export interface StoreDaddy {
     appendValue: Function;
     clearByIndex: Function;
     getFilteredOptions: Function;
+    clearValues: Function;
 }
