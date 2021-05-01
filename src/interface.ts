@@ -20,5 +20,6 @@ export interface StoreDaddy {
     addOptions: Function;
     setValues: Function;
     setMultiple: Function;
-    appendMultiple: Function;
+    appendValue: Function;
+    clearByIndex: Function;
 }

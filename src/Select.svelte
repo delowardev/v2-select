@@ -3,7 +3,7 @@
 	import ChevronDown from "./components/icons/ChevronDown.svelte";
 	import Times from "./components/icons/Times.svelte";
 	import { findText } from "./helper";
-	import type { SelectOption, State } from "./interface";
+	import type { SelectOption, State, StoreDaddy } from "./interface";
 	import { createStore } from "./store";
 
 
@@ -12,7 +12,16 @@
 	 * Constant
 	*/
 
-	const state = createStore();
+	const {
+		data,
+		subscribe,
+		addOptions,
+		setValue,
+		setValues,
+		setMultiple,
+		appendValue,
+		clearByIndex
+	} = createStore();
 
 	/**
 	 * Props
@@ -26,7 +35,6 @@
 	 * Variables
 	 */
 
-	const getState = state.data as State;
 	let search = "";
 	let open = false;
 	let root: HTMLDivElement;
@@ -40,13 +48,13 @@
 	 * Store
 	 */
 
-	state.subscribe((state) => {
-		onSubscribe(state);
+	subscribe((state) => {
+		_onSubscribe(state);
 	});
-	state.addOptions(getInitialSelectOptions(), true);
-	state.setValue(getInitialValues()[0])
-	state.setValues(getInitialValues())
-	state.setMultiple(select.multiple)
+	addOptions(getInitialSelectOptions(), true);
+	setValue(getInitialValues()[0])
+	setValues(getInitialValues())
+	setMultiple(select?.multiple)
 
 	/**
 	 * Functions
@@ -64,21 +72,27 @@
 		return Array.from(getInitialSelectedOptions()).map(({value}) => value);
 	}
 
-	function onSubscribe(data: State): void {
-		value = data.value ? data.value : "";
-		options = data.options ? data.options : [];
-		text = data.options && data.value ? findText(options, value) : "";
-		multiple = data.multiple;
-		values = data.values ? data.values : [];
-		console.log(data);
+	function _onSubscribe(_state: State): void {
+		const {
+			value: _value,
+			options: _options,
+			multiple: _multiple,
+			values: _values
+		} = _state;
+
+		value = _value ? _value : "";
+		values = _values ? _values : [];
+		options = _options ? _options : [];
+		multiple = _multiple;
+		text = value && options ? findText(options, value) : "";
 	}
 
 	function _select(value) {
 
 		if (multiple) {
-			state.appendMultiple(value);
+			appendValue(value);
 		} else {
-			state.setValue(value);
+			setValue(value);
 		}
 
 		_close();
@@ -92,6 +106,10 @@
 		open = false;
 	}
 
+	function _clearByIndex(index) {
+		clearByIndex(index);
+	}
+
 	/**
 	 * Lifecycle
 	 */
@@ -102,8 +120,8 @@
 	<div bind:this={root} class={clsx(
 		'v2select',
 		{
-			v2select__multiple: getState.multiple,
-			v2select__single: !getState.multiple
+			v2select__multiple: multiple,
+			v2select__single: !multiple
 		}
 	)}>
 		<div
@@ -117,10 +135,10 @@
 				<input class="v2select__search" type="text" bind:value={search}>
 				{#if multiple}
 					<div class="v2select__multi-values">
-						{#each values as val}
+						{#each values as val, i}
 							<div class="v2select__multi-value">
 								<span class="v2select__multi-label">{ findText(options, val) }</span>
-								<button class="v2select__multi-close"><Times /></button>
+								<button on:click={() => _clearByIndex(i)} class="v2select__multi-close"><Times /></button>
 							</div>
 						{/each}
 					</div>

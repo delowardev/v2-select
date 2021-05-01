@@ -59,7 +59,7 @@ export function createStore(): StoreDaddy {
     }
   }
 
-  function appendMultiple(value) {
+  function appendValue(value) {
     const st = state();
     if (value) {
       const index = st.values.findIndex(v => v === value);
@@ -74,6 +74,18 @@ export function createStore(): StoreDaddy {
     }
   }
 
+  function clearByIndex(index) {
+    const { values: _values } = state();
+    const _value = _values[index];
+    if (_value) {
+      _values.splice(index, 1);
+      store.update((prevState: State) => ({
+        ...prevState,
+        values: _values
+      }))
+    }
+  }
+
 
   return {
     update: store.update,
@@ -84,7 +96,8 @@ export function createStore(): StoreDaddy {
     addOptions,
     setValues,
     setMultiple,
-    appendMultiple
+    appendValue,
+    clearByIndex
   }
 
 }
