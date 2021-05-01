@@ -25,6 +25,8 @@ $danger-light: #ffbdad;
   border-radius: $radius;
   box-shadow: 0 0 10px rgba(black, .1);
   padding: 4px 0;
+  max-height: 300px;
+  overflow: hidden auto;
   .v2select__dropdown-inner {
     .v2select__dropdown-placeholder,
     .v2select__dropdown-item {
@@ -137,7 +139,7 @@ $danger-light: #ffbdad;
       padding: 2px 8px;
       flex-grow: 1;
       min-width: 0;
-      .v2select__search {
+      .v2select__search-input {
         margin: 0;
         padding: 0;
         border: none;

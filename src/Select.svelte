@@ -138,7 +138,11 @@
 			)}
 		>
 			<div on:click|stopPropagation={_toggle} class="v2select__values">
-				<input class="v2select__search" type="text" bind:value={search}>
+
+				<div class="v2select__search">
+					<span class="v2select__search-skeleton"></span>
+					<input class="v2select__search-input" type="text" bind:value={search}>
+				</div>
 				{#if multiple}
 					{#if Array.isArray(values) && values.length}
 						<div class="v2select__multi-values">
