@@ -102,10 +102,6 @@
 		_close();
 	}
 
-	function _open() {
-		open = true;
-	}
-
 	function _close() {
 		open = false;
 	}
@@ -144,19 +140,27 @@
 				{ 'v2select__controls--is-selected': open }
 			)}
 		>
-			<div on:click|stopPropagation={_open} class="v2select__values">
+			<div on:click|stopPropagation={_toggle} class="v2select__values">
 				<input class="v2select__search" type="text" bind:value={search}>
 				{#if multiple}
-					<div class="v2select__multi-values">
-						{#each values as val, i}
-							<div class="v2select__multi-value">
-								<span class="v2select__multi-label">{ findText(options, val) }</span>
-								<button on:click={() => _clearByIndex(i)} class="v2select__multi-close"><Times /></button>
-							</div>
-						{/each}
-					</div>
+					{#if Array.isArray(values) && values.length}
+						<div class="v2select__multi-values">
+							{#each values as val, i}
+								<div class="v2select__multi-value">
+									<span class="v2select__multi-label">{ findText(options, val) }</span>
+									<button on:click={() => _clearByIndex(i)} class="v2select__multi-close"><Times /></button>
+								</div>
+							{/each}
+						</div>
+					{:else }
+						<div class="v2select__placeholder">Select...</div>
+					{/if}
 				{:else }
-					<div class="v2select__single-value">{text}</div>
+					{#if !!value}
+						<div class="v2select__single-value">{text}</div>
+					{:else}
+						<div class="v2select__placeholder">Select...</div>
+					{/if}
 				{/if}
 			</div>
 			<div class="v2select__buttons">
