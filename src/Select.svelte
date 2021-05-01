@@ -161,10 +161,20 @@
 				{/if}
 			</div>
 			<div class="v2select__buttons">
-				<button on:click={_clearValues} class="v2select__times v2select__icon v2select__btn">
-					<Times />
-				</button>
-				<button on:click|stopPropagation|capture={_toggle} class="v2select__arrow v2select__icon v2select__btn">
+				{#if multiple}
+					{#if values.length}
+						<button on:click={_clearValues} class="v2select__btn">
+							<Times/>
+						</button>
+					{/if}
+				{:else}
+					{#if !!value}
+						<button on:click={_clearValues} class="v2select__btn">
+							<Times/>
+						</button>
+					{/if}
+				{/if}
+				<button on:click|stopPropagation|capture={_toggle} class="v2select__btn">
 					<ChevronDown />
 				</button>
 			</div>
@@ -178,7 +188,7 @@
 							class={clsx(
 								'v2select__dropdown-item',
 								{
-									'v2select__dropdown--selected': option.value === value,
+									'v2select__dropdown--selected': option.value === value && !multiple,
 									'v2select__dropdown--is-disabled': option.disabled === true
 								}
 							)}

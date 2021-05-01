@@ -65,6 +65,7 @@ $danger-light: #ffbdad;
   height: $height - 2px;
   align-self: stretch;
   .v2select__btn {
+    font-size: 17px;
     cursor: pointer;
     margin: 0 0 0 1px;
     padding: 0;
@@ -84,20 +85,16 @@ $danger-light: #ffbdad;
     }
     &:last-child {
       border-radius: 0 $radius $radius 0;
-    }
-    &:not(:first-child)::before {
-      content: "";
-      height: 50%;
-      width: 1px;
-      background: $color-grey;
-      left: -1px;
-      position: absolute;
+      &::before {
+        content: "";
+        height: 50%;
+        width: 1px;
+        background: $color-grey;
+        left: -1px;
+        position: absolute;
+      }
     }
   }
-}
-
-.v2select__icon {
-  font-size: 17px;
 }
 
 .v2select * {
