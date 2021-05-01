@@ -30,19 +30,18 @@
 	let search = "";
 	let open = false;
 	let root: HTMLDivElement;
-	let value = state.data.value;
-	let options = state.data.options;
-	let text = ""; //findText(options, state.data.value);
+	let value = "";
+	let options = [];
+	let text = "";
+	let multiple = false;
+	let values = [];
 
 	/**
 	 * Store
 	 */
 
 	state.subscribe((state) => {
-		console.log(state);
-		if (state.options && state.value) {
-			onSubscribe(state);
-		}
+		onSubscribe(state);
 	});
 	state.addOptions(getInitialSelectOptions(), true);
 	state.setValue(getInitialValues()[0])
@@ -66,14 +65,22 @@
 	}
 
 	function onSubscribe(data: State): void {
-		value = data.value;
-		options = data.options;
-		text = findText(options, value);
+		value = data.value ? data.value : "";
+		options = data.options ? data.options : [];
+		text = data.options && data.value ? findText(options, value) : "";
+		multiple = data.multiple;
+		values = data.values ? data.values : [];
+		console.log(data);
 	}
 
 	function _select(value) {
-		state.setValue(value);
-		console.log(value)
+
+		if (multiple) {
+			state.appendMultiple(value);
+		} else {
+			state.setValue(value);
+		}
+
 		_close();
 	}
 
@@ -108,7 +115,15 @@
 		>
 			<div class="v2select__values">
 				<input class="v2select__search" type="text" bind:value={search}>
-				<div class="v2select__value">{text}</div>
+				{#if multiple}
+					<div class="v2select__values">
+						{#each values as val}
+							<div class="v2select__multi-value">{ findText(options, val) }</div>
+						{/each}
+					</div>
+				{:else }
+					<div class="v2select__single-value">{text}</div>
+				{/if}
 			</div>
 			<div class="v2select__buttons">
 				<button class="v2select__times v2select__icon v2select__btn">
