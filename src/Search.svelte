@@ -26,8 +26,8 @@
 
     function onDelete(e) {
         let char = (typeof e !== 'undefined') ? e.keyCode : e.which
-        if (char === "Backspace" && !search) {
-            console.log("Should clear");
+        if (char === 8 && !search) {
+            dispatch('backspace');
         }
     }
 

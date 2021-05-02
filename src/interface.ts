@@ -26,4 +26,5 @@ export interface StoreDaddy {
     getFilteredOptions: Function;
     clearValues: Function;
     setSearch: Function;
+    backspace: Function;
 }

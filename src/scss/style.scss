@@ -40,6 +40,7 @@ $danger-light: #ffbdad;
       border-radius: 0;
       transition: $transition;
       cursor: pointer;
+      &:not(.v2select__dropdown--is-disabled):not(.v2select__dropdown--selected):focus,
       &:not(.v2select__dropdown--is-disabled):not(.v2select__dropdown--selected):hover {
         background: rgba($color-primary, .2);
       }

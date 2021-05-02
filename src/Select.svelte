@@ -7,14 +7,11 @@
 	import { createStore } from "./store";
 	import Search from "./Search.svelte";
 
-
-
 	/**
 	 * Constant
 	*/
 
 	const {
-		data,
 		subscribe,
 		addOptions,
 		setValue,
@@ -24,7 +21,8 @@
 		clearByIndex,
 		getFilteredOptions,
 		clearValues,
-		setSearch
+		setSearch,
+		backspace
 	} = createStore();
 
 	/**
@@ -132,6 +130,10 @@
 		}
 	}
 
+	/**
+	 * Custom events func
+	 */
+
 	function _setSearch (e) {
 		const _value = e.detail.value;
 		setSearch(_value);
@@ -140,9 +142,9 @@
 		}
 	}
 
-	/**
-	 * Lifecycle
-	 */
+	function _backspace() {
+		backspace();
+	}
 
 </script>
 
@@ -175,6 +177,7 @@
 								bind:this={elemSearch}
 								bind:search={searchText}
 								on:update={_setSearch}
+								on:backspace={_backspace}
 							/>
 						</div>
 					{:else }
@@ -183,6 +186,7 @@
 							bind:this={elemSearch}
 							bind:search={searchText}
 							on:update={_setSearch}
+							on:backspace={_backspace}
 						/>
 						{#if !searchText}
 							<div class="v2select__placeholder">Select...</div>
@@ -194,6 +198,7 @@
 						bind:this={elemSearch}
 						bind:search={searchText}
 						on:update={_setSearch}
+						on:backspace={_backspace}
 					/>
 					{#if !searchText}
 						{#if !!value}

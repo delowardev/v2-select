@@ -126,6 +126,20 @@ export function createStore(): StoreDaddy {
     }))
   }
 
+  function backspace() {
+    const { values } = state();
+
+    values.pop();
+
+    store.update((prevState: State) => ({
+      ...prevState,
+      values,
+      value: ""
+    }))
+
+
+  }
+
 
   return {
     update: store.update,
@@ -140,7 +154,8 @@ export function createStore(): StoreDaddy {
     clearByIndex,
     getFilteredOptions,
     clearValues,
-    setSearch
+    setSearch,
+    backspace
   }
 
 }
