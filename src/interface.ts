@@ -1,14 +1,15 @@
 export interface SelectOption {
-    text: String;
-    value: String;
-    disabled?: Boolean;
+    text: string;
+    value: string;
+    disabled?: boolean;
 }
 
 export interface State {
-    value: String;
-    values: String[];
+    search: string;
+    value: string;
+    values: string[];
     options: SelectOption[];
-    multiple: Boolean
+    multiple: boolean
 }
 
 export interface StoreDaddy {
@@ -24,4 +25,5 @@ export interface StoreDaddy {
     clearByIndex: Function;
     getFilteredOptions: Function;
     clearValues: Function;
+    setSearch: Function;
 }

@@ -2,6 +2,7 @@ import { get, writable } from 'svelte/store';
 import type { State, SelectOption, StoreDaddy } from "./interface";
 
 const _state: State = {
+  search: "",
   value: "",
   values: [],
   options: [],
@@ -20,8 +21,18 @@ export function createStore(): StoreDaddy {
   };
 
   function getFilteredOptions() {
-    const { values, options } = state();
-    return options.filter(option => !values.includes(option.value));
+    const { values, options, search } = state();
+    return options.filter(option => {
+      if (values.includes(option.value)) {
+        return false;
+      }
+
+      if (!option.value.toLowerCase().trim().startsWith(search.toLowerCase().trim())) {
+        return false;
+      }
+
+      return true;
+    });
   }
 
 
@@ -48,7 +59,7 @@ export function createStore(): StoreDaddy {
   }
 
 
-  function setValue(value: String): void {
+  function setValue(value: string): void {
     if (state().value !== value) {
       store.update((prevState: State) => ({
         ...prevState,
@@ -57,7 +68,7 @@ export function createStore(): StoreDaddy {
     }
   }
 
-  function setValues(values: String[]) {
+  function setValues(values: string[]) {
     store.update((prevState: State) => ({
       ...prevState,
       values
@@ -107,6 +118,13 @@ export function createStore(): StoreDaddy {
     }))
   }
 
+  function setSearch(value) {
+    store.update((prevState: State) => ({
+      ...prevState,
+      search: value
+    }))
+  }
+
 
   return {
     update: store.update,
@@ -120,7 +138,8 @@ export function createStore(): StoreDaddy {
     appendValue,
     clearByIndex,
     getFilteredOptions,
-    clearValues
+    clearValues,
+    setSearch
   }
 
 }

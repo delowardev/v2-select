@@ -1,0 +1,12 @@
+.v2select__search {
+  display: inline-flex;
+  align-self: center;
+  .v2select__search-skeleton {
+    min-width: 2px;
+    height: 18px;
+    display: flex;
+    outline: none;
+    line-height: 18px;
+    transform: translateX(4px);
+  }
+}

@@ -3,8 +3,9 @@
 	import ChevronDown from "./components/icons/ChevronDown.svelte";
 	import Times from "./components/icons/Times.svelte";
 	import { findText } from "./helper";
-	import type { SelectOption, State, StoreDaddy } from "./interface";
+	import type { SelectOption, State } from "./interface";
 	import { createStore } from "./store";
+	import Search from "./Search.svelte";
 
 
 
@@ -22,7 +23,8 @@
 		appendValue,
 		clearByIndex,
 		getFilteredOptions,
-		clearValues
+		clearValues,
+		setSearch
 	} = createStore();
 
 	/**
@@ -37,15 +39,18 @@
 	 * Variables
 	 */
 
-	let search = "";
 	let open = false;
-	let root: HTMLDivElement;
 	let value = "";
 	let options = [];
 	let text = "";
 	let multiple = false;
 	let values = [];
 	let filteredOptions = [];
+	let searchText = "";
+	// refs
+	let elemRoot: HTMLDivElement;
+	let elemSearchSkeleton: HTMLSpanElement;
+	let elemSearch;
 
 	/**
 	 * Store
@@ -80,18 +85,21 @@
 			value: _value,
 			options: _options,
 			multiple: _multiple,
-			values: _values
+			values: _values,
+			search: _search
 		} = _state;
 
 		value = _value ? _value : "";
 		values = _values ? _values : [];
 		multiple = _multiple;
 		options = _options ? _options : [];
-		filteredOptions = multiple ? getFilteredOptions() : _options;
+		filteredOptions = getFilteredOptions();
 		text = value && options ? findText(_options, value) : "";
+		searchText = _search
 	}
 
 	function _select(value) {
+		setSearch("");
 		if (multiple) {
 			appendValue(value);
 			return;
@@ -117,6 +125,21 @@
 		_close();
 	}
 
+	function _handleOnClickValue() {
+		_toggle();
+		if (elemSearch.focus) {
+			elemSearch.focus();
+		}
+	}
+
+	function _setSearch (e) {
+		const _value = e.detail.value;
+		setSearch(_value);
+		if (value && !open) {
+			open = true;
+		}
+	}
+
 	/**
 	 * Lifecycle
 	 */
@@ -124,7 +147,7 @@
 </script>
 
 <main>
-	<div bind:this={root} class={clsx(
+	<div bind:this={elemRoot} class={clsx(
 		'v2select',
 		{
 			v2select__multiple: multiple,
@@ -137,12 +160,7 @@
 				{ 'v2select__controls--is-selected': open }
 			)}
 		>
-			<div on:click|stopPropagation={_toggle} class="v2select__values">
-
-				<div class="v2select__search">
-					<span class="v2select__search-skeleton"></span>
-					<input class="v2select__search-input" type="text" bind:value={search}>
-				</div>
+			<div on:click|stopPropagation={_handleOnClickValue} class="v2select__values">
 				{#if multiple}
 					{#if Array.isArray(values) && values.length}
 						<div class="v2select__multi-values">
@@ -152,14 +170,17 @@
 									<button on:click|stopPropagation|capture={() => _clearByIndex(i)} class="v2select__multi-close"><Times /></button>
 								</div>
 							{/each}
+							<Search bind:this={elemSearch} bind:search={searchText} on:update={_setSearch} />
 						</div>
 					{:else }
+						<Search bind:this={elemSearch} bind:search={searchText} on:update={_setSearch} />
 						<div class="v2select__placeholder">Select...</div>
 					{/if}
 				{:else }
-					{#if !!value}
+					<Search bind:this={elemSearch} bind:search={searchText} on:update={_setSearch} />
+					{#if !!value && !searchText}
 						<div class="v2select__single-value">{text}</div>
-					{:else}
+					{:else if !searchText}
 						<div class="v2select__placeholder">Select...</div>
 					{/if}
 				{/if}

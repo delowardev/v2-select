@@ -132,21 +132,12 @@ $danger-light: #ffbdad;
       color: $color-placeholder;
       margin: 0 2px;
     }
-
     .v2select__values {
       display: flex;
       align-items: center;
-      padding: 2px 8px;
+      padding: 2px 8px 2px 6px;
       flex-grow: 1;
       min-width: 0;
-      .v2select__search-input {
-        margin: 0;
-        padding: 0;
-        border: none;
-        outline: none;
-        width: 2px;
-        background: red;
-      }
       .v2select__multi-values,
       .v2select__single-value {
         margin: 0 2px;
@@ -159,11 +150,13 @@ $danger-light: #ffbdad;
       .v2select__multi-values {
         width: 100%;
         margin: 0;
+        display: flex;
+        flex-wrap: wrap;
         .v2select__multi-value {
           display: inline-flex;
           background: $color-grey-light;
           color: $color-text;
-          margin: 0 2px;
+          margin: 2px;
           font-size: 85%;
           line-height: 22px;
           height: 22px;
