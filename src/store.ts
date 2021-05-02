@@ -63,7 +63,8 @@ export function createStore(): StoreDaddy {
     if (state().value !== value) {
       store.update((prevState: State) => ({
         ...prevState,
-        value
+        value,
+        values: []
       }))
     }
   }

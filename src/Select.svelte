@@ -170,18 +170,37 @@
 									<button on:click|stopPropagation|capture={() => _clearByIndex(i)} class="v2select__multi-close"><Times /></button>
 								</div>
 							{/each}
-							<Search bind:this={elemSearch} bind:search={searchText} on:update={_setSearch} />
+							<Search
+								bind:multiple={multiple}
+								bind:this={elemSearch}
+								bind:search={searchText}
+								on:update={_setSearch}
+							/>
 						</div>
 					{:else }
-						<Search bind:this={elemSearch} bind:search={searchText} on:update={_setSearch} />
-						<div class="v2select__placeholder">Select...</div>
+						<Search
+							bind:multiple={multiple}
+							bind:this={elemSearch}
+							bind:search={searchText}
+							on:update={_setSearch}
+						/>
+						{#if !searchText}
+							<div class="v2select__placeholder">Select...</div>
+						{/if}
 					{/if}
 				{:else }
-					<Search bind:this={elemSearch} bind:search={searchText} on:update={_setSearch} />
-					{#if !!value && !searchText}
-						<div class="v2select__single-value">{text}</div>
-					{:else if !searchText}
-						<div class="v2select__placeholder">Select...</div>
+					<Search
+						bind:multiple={multiple}
+						bind:this={elemSearch}
+						bind:search={searchText}
+						on:update={_setSearch}
+					/>
+					{#if !searchText}
+						{#if !!value}
+							<div class="v2select__single-value">{text}</div>
+						{:else}
+							<div class="v2select__placeholder">Select...</div>
+						{/if}
 					{/if}
 				{/if}
 			</div>

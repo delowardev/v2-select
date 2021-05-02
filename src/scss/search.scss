@@ -7,6 +7,9 @@
     display: flex;
     outline: none;
     line-height: 18px;
-    transform: translateX(4px);
+    &.v2select__is-single {
+      margin-left: 0;
+      transform: translateX(4px);
+    }
   }
 }
