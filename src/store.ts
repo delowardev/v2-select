@@ -40,48 +40,39 @@ export function createStore(): StoreDaddy {
    * Store Mutation/Setter
    */
 
+  function update(options) {
+    store.update((prevState: State): State => ({
+      ...prevState,
+      ...options
+    }))
+  }
+
   function addOption(option: SelectOption) {
     const options = JSON.parse(JSON.stringify(state().options));
     options.push(option);
-    store.update((prevState: State) => ({
-      ...prevState,
-      options
-    }))
+    update({options});
   }
 
   function addOptions(options_: SelectOption[], clean: false) {
     const options = clean ? [] : JSON.parse(JSON.stringify(state().options));
     options.push(...options_);
-    store.update((prevState: State) => ({
-      ...prevState,
-      options
-    }))
+    update({options});
   }
 
 
   function setValue(value: string): void {
     if (state().value !== value) {
-      store.update((prevState: State) => ({
-        ...prevState,
-        value,
-        values: []
-      }))
+      update({value, values: []});
     }
   }
 
   function setValues(values: string[]) {
-    store.update((prevState: State) => ({
-      ...prevState,
-      values
-    }))
+    update({values});
   }
 
   function setMultiple( multiple = true) {
     if(state().multiple !== multiple) {
-      store.update((prevState: State) => ({
-        ...prevState,
-        multiple
-      }))
+      update({multiple});
     }
   }
 
@@ -92,10 +83,7 @@ export function createStore(): StoreDaddy {
       const _values = st.values;
       if (index === -1) {
         _values.push(value);
-        store.update((prevState: State) => ({
-          ...prevState,
-          values: _values
-        }))
+        update({values: _values});
       }
     }
   }
@@ -104,40 +92,22 @@ export function createStore(): StoreDaddy {
     const { values } = state();
     if (values[index]) {
       values.splice(index, 1);
-      store.update((prevState: State) => ({
-        ...prevState,
-        values
-      }))
+      update({values});
     }
   }
 
   function clearValues() {
-    store.update((prevState: State) => ({
-      ...prevState,
-      value: "",
-      values: []
-    }))
+    update({values: [], value: ""});
   }
 
-  function setSearch(value) {
-    store.update((prevState: State) => ({
-      ...prevState,
-      search: value
-    }))
+  function setSearch(search) {
+    update({search});
   }
 
   function backspace() {
     const { values } = state();
-
     values.pop();
-
-    store.update((prevState: State) => ({
-      ...prevState,
-      values,
-      value: ""
-    }))
-
-
+    update({values, value: ""});
   }
 
 
