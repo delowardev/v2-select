@@ -6,6 +6,7 @@
 	import type { SelectOption, State } from "./interface";
 	import { createStore } from "./store";
 	import Search from "./Search.svelte";
+	import { onMount } from "svelte";
 
 	/**
 	 * Constant
@@ -47,7 +48,6 @@
 	let searchText = "";
 	// refs
 	let elemRoot: HTMLDivElement;
-	let elemSearchSkeleton: HTMLSpanElement;
 	let elemSearch;
 
 	/**
@@ -146,10 +146,27 @@
 		backspace();
 	}
 
+	/**
+	 * Lifecycle
+	 */
+
+	onMount(() => {
+		document.addEventListener('click', (e: MouseEvent) => {
+			const closest = e.target.closest('.v2select');
+			const condition = e.target === elemRoot || (closest && closest === elemRoot);
+			if (!condition) {
+				e.preventDefault();
+				_close();
+			}
+
+		})
+
+	})
+
 </script>
 
 <main>
-	<div bind:this={elemRoot} class={clsx(
+	<div tabindex="0" bind:this={elemRoot} class={clsx(
 		'v2select',
 		{
 			v2select__multiple: multiple,
@@ -162,14 +179,19 @@
 				{ 'v2select__controls--is-selected': open }
 			)}
 		>
-			<div on:click|stopPropagation={_handleOnClickValue} class="v2select__values">
+			<div on:click={_handleOnClickValue} class="v2select__values">
 				{#if multiple}
 					{#if Array.isArray(values) && values.length}
 						<div class="v2select__multi-values">
 							{#each values as val, i}
 								<div class="v2select__multi-value">
 									<span class="v2select__multi-label">{ findText(options, val) }</span>
-									<button on:click|stopPropagation|capture={() => _clearByIndex(i)} class="v2select__multi-close"><Times /></button>
+									<button
+										on:click|stopPropagation|capture={_clearByIndex.bind(this, i)}
+										class="v2select__multi-close"
+									>
+										<Times />
+									</button>
 								</div>
 							{/each}
 							<Search

@@ -5,6 +5,7 @@ $color-grey: #cccccc;
 $color-grey-dark: #999999;
 $color-grey-darker: #666666;
 $color-primary: #2684FC;
+$color-primary-light: rgba(38, 132, 252, 0.2);
 $transition: 200ms;
 $color-text: #333333;
 $color-placeholder: #808080;
@@ -120,7 +121,11 @@ $danger-light: #ffbdad;
     align-items: center;
     transition: $transition;
     width: 100%;
-
+    //&:not(.v2select__controls--is-selected):focus {
+    //  border-color: $color-primary;
+    //  box-shadow: $color-primary 0 0 0 1px;
+    //  outline: none;
+    //}
     &.v2select__controls--is-selected {
       border-color: $color-primary;
       box-shadow: $color-primary 0 0 0 1px;
