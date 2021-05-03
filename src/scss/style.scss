@@ -84,6 +84,9 @@ $danger-light: #ffbdad;
     background: none;
     position: relative;
     transition: $transition;
+    &:focus {
+      color: $color-primary !important;
+    }
     &:hover {
       color: $color-grey-dark;
     }

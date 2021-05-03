@@ -263,6 +263,7 @@
 									'v2select__dropdown--is-disabled': option.disabled === true
 								}
 							)}
+							tabindex={option.disabled ? '-1' : '0'}
 							on:click={
 								() => option.disabled ? null : _select(option.value)
 							}
