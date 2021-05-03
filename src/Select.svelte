@@ -265,8 +265,8 @@
                 )}
                 tabindex={option.disabled ? '-1' : '0'}
                 on:click={
-								() => option.disabled ? null : _select(option.value)
-							}
+                  () => option.disabled ? null : _select(option.value)
+                }
               >
                 {option.text}
               </button>
