@@ -35,13 +35,13 @@
 
 <div class="v2select__search">
   <span
-      on:input={_search}
-      contenteditable="true"
-      bind:this={elemSearch}
-      bind:textContent={search}
-      class={clsx('v2select__search-skeleton', {
-        'v2select__is-multi': multiple,
-        'v2select__is-single': !multiple,
+    on:input={_search}
+    contenteditable="true"
+    bind:this={elemSearch}
+    bind:textContent={search}
+    class={clsx('v2select__search-skeleton', {
+      'v2select__is-multi': multiple,
+      'v2select__is-single': !multiple,
     })}
   >{search}</span>
 </div>

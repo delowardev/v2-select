@@ -174,7 +174,7 @@
 		}
 	)}>
     <div
-        class={clsx(
+      class={clsx(
 				'v2select__controls',
 				{ 'v2select__controls--is-selected': open }
 			)}
@@ -187,28 +187,28 @@
                 <div class="v2select__multi-value">
                   <span class="v2select__multi-label">{ findText(options, val) }</span>
                   <button
-                      on:click|stopPropagation|capture={_clearByIndex.bind(this, i)}
-                      class="v2select__multi-close"
+                    on:click|stopPropagation|capture={_clearByIndex.bind(this, i)}
+                    class="v2select__multi-close"
                   >
                     <Times />
                   </button>
                 </div>
               {/each}
               <Search
-                  bind:multiple={multiple}
-                  bind:this={elemSearch}
-                  bind:search={searchText}
-                  on:update={_setSearch}
-                  on:backspace={_backspace}
-              />
-            </div>
-          {:else }
-            <Search
                 bind:multiple={multiple}
                 bind:this={elemSearch}
                 bind:search={searchText}
                 on:update={_setSearch}
                 on:backspace={_backspace}
+              />
+            </div>
+          {:else }
+            <Search
+              bind:multiple={multiple}
+              bind:this={elemSearch}
+              bind:search={searchText}
+              on:update={_setSearch}
+              on:backspace={_backspace}
             />
             {#if !searchText}
               <div class="v2select__placeholder">Select...</div>
@@ -216,11 +216,11 @@
           {/if}
         {:else }
           <Search
-              bind:multiple={multiple}
-              bind:this={elemSearch}
-              bind:search={searchText}
-              on:update={_setSearch}
-              on:backspace={_backspace}
+            bind:multiple={multiple}
+            bind:this={elemSearch}
+            bind:search={searchText}
+            on:update={_setSearch}
+            on:backspace={_backspace}
           />
           {#if !searchText}
             {#if !!value}
@@ -256,15 +256,15 @@
           {#if Array.isArray(filteredOptions) && filteredOptions.length}
             {#each filteredOptions as option}
               <button
-                  class={clsx(
-								'v2select__dropdown-item',
-								{
-									'v2select__dropdown--selected': option.value === value && !multiple,
-									'v2select__dropdown--is-disabled': option.disabled === true
-								}
-							)}
-                  tabindex={option.disabled ? '-1' : '0'}
-                  on:click={
+                class={clsx(
+                  'v2select__dropdown-item',
+                  {
+                    'v2select__dropdown--selected': option.value === value && !multiple,
+                    'v2select__dropdown--is-disabled': option.disabled === true
+                  }
+                )}
+                tabindex={option.disabled ? '-1' : '0'}
+                on:click={
 								() => option.disabled ? null : _select(option.value)
 							}
               >
