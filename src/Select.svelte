@@ -152,7 +152,7 @@
 
 	onMount(() => {
 		document.addEventListener('click', (e: MouseEvent) => {
-			const closest = e.target.closest('.v2select');
+			const closest = (e.target as HTMLElement).closest('.v2select');
 			const condition = e.target === elemRoot || (closest && closest === elemRoot);
 			if (!condition) {
 				e.preventDefault();
