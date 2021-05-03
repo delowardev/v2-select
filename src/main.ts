@@ -1,12 +1,11 @@
 import App from './Select.svelte';
 
-
 function SelectV2(node: HTMLSelectElement) {
-
+	
 	if (!node || node.tagName !== "SELECT") {
 		throw new Error("Invalid argument!");
 	}
-
+	
 	// node.style.display = "none";
 	const div = document.createElement("div");
 	document.body.insertBefore(div, node);

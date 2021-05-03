@@ -18,7 +18,7 @@ export function createStore(): StoreDaddy {
 
   function state(): State {
     return get(store); // always get latest value
-  };
+  }
 
   function getFilteredOptions() {
     const { values, options, search } = state();

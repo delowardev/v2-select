@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x" viewBox="0 0 24 24">
-    <path d="M18 6L6 18M6 6l12 12"/>
+  <path d="M18 6L6 18M6 6l12 12"/>
 </svg>
 
 <style>
-    svg {
-        height: 1em;
-        width: 1em;
-    }
+  svg {
+    height: 1em;
+    width: 1em;
+  }
 </style>
