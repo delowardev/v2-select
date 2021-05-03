@@ -114,7 +114,7 @@ export function createStore(): StoreDaddy {
   return {
     update: store.update,
     subscribe: store.subscribe,
-    data: store,
+    state,
     setValue,
     addOption,
     addOptions,
