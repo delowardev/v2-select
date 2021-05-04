@@ -7,7 +7,8 @@
     display: flex;
     outline: none;
     line-height: 18px;
-    &.v2select__is-single {
+    margin-left: 2px;
+    &.v2select__is-left {
       margin-left: 0;
       transform: translateX(4px);
     }

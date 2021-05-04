@@ -5,7 +5,7 @@
   const dispatch = createEventDispatcher();
   
   export let search: string;
-  export let multiple: boolean;
+  export let right: boolean;
   // elem binding
   let elemSearch: HTMLSpanElement;
   
@@ -40,8 +40,7 @@
     bind:this={elemSearch}
     bind:textContent={search}
     class={clsx('v2select__search-skeleton', {
-      'v2select__is-multi': multiple,
-      'v2select__is-single': !multiple,
+      'v2select__is-left': !right,
     })}
   >{search}</span>
 </div>

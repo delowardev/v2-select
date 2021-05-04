@@ -195,7 +195,7 @@
                 </div>
               {/each}
               <Search
-                bind:multiple={multiple}
+                right={true}
                 bind:this={elemSearch}
                 bind:search={searchText}
                 on:update={_setSearch}
@@ -204,7 +204,7 @@
             </div>
           {:else }
             <Search
-              bind:multiple={multiple}
+              right={false}
               bind:this={elemSearch}
               bind:search={searchText}
               on:update={_setSearch}
@@ -216,7 +216,7 @@
           {/if}
         {:else }
           <Search
-            bind:multiple={multiple}
+            right={false}
             bind:this={elemSearch}
             bind:search={searchText}
             on:update={_setSearch}
