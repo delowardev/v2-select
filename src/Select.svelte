@@ -95,25 +95,19 @@
   }
   
   function updateValues(_value, _values) {
-    if (_value !== value) {
-      value = _value;
-    }
-    if (simplifyArr(_values) !== simplifyArr(values)) {
-      values = _values;
-    }
+    value = _value;
+    select.value = value;
+    values = _values;
+    // updateSelectElem();
   }
   
-  function updateSelectElem(value) {
-    if (!multiple) {
-      select.value = value;
-    } else {
-      Array.from(select.options).forEach(option => {
-        option.selected = values.includes(option.value);
-      });
-      console.log(select.selectedOptions);
-    }
-    console.log(select.value);
-  }
+  
+  // function updateSelectElem() {
+  //   Array.from(select.options).forEach(option => {
+  //     option.selected = values.includes(option.value);
+  //   });
+  //   console.log(select.selectedOptions);
+  // }
   
   // handler functions
   

@@ -5,6 +5,6 @@ export function findText(options: SelectOption[], value: string): string {
 }
 
 export function simplifyArr(arr) {
-  arr = arr.sort();
+  arr = arr.slice().sort();
   return JSON.stringify(arr);
 }
