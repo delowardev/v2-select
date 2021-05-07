@@ -4,3 +4,7 @@ export function findText(options: SelectOption[], value: string): string {
   return options.find((option: SelectOption): boolean => option.value === value)?.text || "";
 }
 
+export function simplifyArr(arr) {
+  arr = arr.sort();
+  return JSON.stringify(arr);
+}

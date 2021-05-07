@@ -2,7 +2,7 @@
   import clsx from "clsx";
   import ChevronDown from "./components/icons/ChevronDown.svelte";
   import Times from "./components/icons/Times.svelte";
-  import { findText } from "./helper";
+  import { findText, simplifyArr } from "./helper";
   import type { SelectOption, State } from "./interface";
   import { createStore } from "./store";
   import Search from "./Search.svelte";
@@ -86,15 +86,36 @@
       values: _values,
       search: _search
     } = _state;
-    
-    value = _value ? _value : "";
-    values = _values ? _values : [];
+    updateValues(_value, _values);
     multiple = _multiple;
-    options = _options ? _options : [];
+    options = _options;
     filteredOptions = getFilteredOptions();
-    text = value && options ? findText(_options, value) : "";
+    text = _value && options ? findText(_options, _value) : "";
     searchText = _search
   }
+  
+  function updateValues(_value, _values) {
+    if (_value !== value) {
+      value = _value;
+    }
+    if (simplifyArr(_values) !== simplifyArr(values)) {
+      values = _values;
+    }
+  }
+  
+  function updateSelectElem(value) {
+    if (!multiple) {
+      select.value = value;
+    } else {
+      Array.from(select.options).forEach(option => {
+        option.selected = values.includes(option.value);
+      });
+      console.log(select.selectedOptions);
+    }
+    console.log(select.value);
+  }
+  
+  // handler functions
   
   function _select(value) {
     setSearch("");
@@ -165,55 +186,42 @@
 
 </script>
 
-<main>
-  <div tabindex="0" bind:this={elemRoot} class={clsx(
-		'v2select',
-		{
-			v2select__multiple: multiple,
-			v2select__single: !multiple
-		}
-	)}>
-    <div
-      class={clsx(
-				'v2select__controls',
-				{ 'v2select__controls--is-selected': open }
-			)}
-    >
-      <div on:click={_handleOnClickValue} class="v2select__values">
-        {#if multiple}
-          {#if Array.isArray(values) && values.length}
-            <div class="v2select__multi-values">
-              {#each values as val, i}
-                <div class="v2select__multi-value">
-                  <span class="v2select__multi-label">{ findText(options, val) }</span>
-                  <button
-                    on:click|stopPropagation|capture={_clearByIndex.bind(this, i)}
-                    class="v2select__multi-close"
-                  >
-                    <Times />
-                  </button>
-                </div>
-              {/each}
-              <Search
-                right={true}
-                bind:this={elemSearch}
-                bind:search={searchText}
-                on:update={_setSearch}
-                on:backspace={_backspace}
-              />
-            </div>
-          {:else }
+<div tabindex="0" bind:this={elemRoot} class={clsx(
+  'v2select',
+  {
+    v2select__multiple: multiple,
+    v2select__single: !multiple
+  }
+)}>
+  <div
+    class={clsx(
+      'v2select__controls',
+      { 'v2select__controls--is-selected': open }
+    )}
+  >
+    <div on:click={_handleOnClickValue} class="v2select__values">
+      {#if multiple}
+        {#if Array.isArray(values) && values.length}
+          <div class="v2select__multi-values">
+            {#each values as val, i}
+              <div class="v2select__multi-value">
+                <span class="v2select__multi-label">{ findText(options, val) }</span>
+                <button
+                  on:click|stopPropagation|capture={_clearByIndex.bind(this, i)}
+                  class="v2select__multi-close"
+                >
+                  <Times />
+                </button>
+              </div>
+            {/each}
             <Search
-              right={false}
+              right={true}
               bind:this={elemSearch}
               bind:search={searchText}
               on:update={_setSearch}
               on:backspace={_backspace}
             />
-            {#if !searchText}
-              <div class="v2select__placeholder">Select...</div>
-            {/if}
-          {/if}
+          </div>
         {:else }
           <Search
             right={false}
@@ -223,62 +231,73 @@
             on:backspace={_backspace}
           />
           {#if !searchText}
-            {#if !!value}
-              <div class="v2select__single-value">{text}</div>
-            {:else}
-              <div class="v2select__placeholder">Select...</div>
-            {/if}
+            <div class="v2select__placeholder">Select...</div>
           {/if}
         {/if}
-      </div>
-      <div class="v2select__buttons">
-        {#if multiple}
-          {#if values.length}
-            <button on:click={_clearValues} class="v2select__btn">
-              <Times/>
-            </button>
-          {/if}
-        {:else}
+      {:else }
+        <Search
+          right={false}
+          bind:this={elemSearch}
+          bind:search={searchText}
+          on:update={_setSearch}
+          on:backspace={_backspace}
+        />
+        {#if !searchText}
           {#if !!value}
-            <button on:click={_clearValues} class="v2select__btn">
-              <Times/>
-            </button>
+            <div class="v2select__single-value">{text}</div>
+          {:else}
+            <div class="v2select__placeholder">Select...</div>
           {/if}
         {/if}
-        <button on:click|stopPropagation|capture={_toggle} class="v2select__btn">
-          <ChevronDown />
-        </button>
+      {/if}
+    </div>
+    <div class="v2select__buttons">
+      {#if multiple}
+        {#if values.length}
+          <button on:click={_clearValues} class="v2select__btn">
+            <Times/>
+          </button>
+        {/if}
+      {:else}
+        {#if !!value}
+          <button on:click={_clearValues} class="v2select__btn">
+            <Times/>
+          </button>
+        {/if}
+      {/if}
+      <button on:click|stopPropagation|capture={_toggle} class="v2select__btn">
+        <ChevronDown />
+      </button>
+    </div>
+  </div>
+  {#if open}
+    <div class="v2select__dropdown">
+      <div class="v2select__dropdown-inner">
+        {#if Array.isArray(filteredOptions) && filteredOptions.length}
+          {#each filteredOptions as option}
+            <button
+              class={clsx(
+                'v2select__dropdown-item',
+                {
+                  'v2select__dropdown--selected': option.value === value && !multiple,
+                  'v2select__dropdown--is-disabled': option.disabled === true
+                }
+              )}
+              tabindex={option.disabled ? '-1' : '0'}
+              on:click={
+                () => option.disabled ? null : _select(option.value)
+              }
+            >
+              {option.text}
+            </button>
+          {/each}
+        {:else}
+          <span class="v2select__dropdown-placeholder">No Options</span>
+        {/if}
       </div>
     </div>
-    {#if open}
-      <div class="v2select__dropdown">
-        <div class="v2select__dropdown-inner">
-          {#if Array.isArray(filteredOptions) && filteredOptions.length}
-            {#each filteredOptions as option}
-              <button
-                class={clsx(
-                  'v2select__dropdown-item',
-                  {
-                    'v2select__dropdown--selected': option.value === value && !multiple,
-                    'v2select__dropdown--is-disabled': option.disabled === true
-                  }
-                )}
-                tabindex={option.disabled ? '-1' : '0'}
-                on:click={
-                  () => option.disabled ? null : _select(option.value)
-                }
-              >
-                {option.text}
-              </button>
-            {/each}
-          {:else}
-            <span class="v2select__dropdown-placeholder">No Options</span>
-          {/if}
-        </div>
-      </div>
-    {/if}
-  </div>
-</main>
+  {/if}
+</div>
 
 <style type="text/scss">
   @import "scss/style.scss";
