@@ -96,7 +96,7 @@
   
   function updateValues(_value, _values) {
     value = _value;
-    select.value = value;
+    // select.value = value;
     values = _values;
     // updateSelectElem();
   }
