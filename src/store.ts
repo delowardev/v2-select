@@ -1,120 +1,85 @@
 import { get, writable } from 'svelte/store';
-import type { State, SelectOption, StoreDaddy } from "./interface";
-
-const _state: State = {
-  search: "",
-  value: "",
-  values: [],
-  options: [],
-  multiple: false
-};
+import type { SelectOption, StoreDaddy } from "./interface";
 
 export function createStore(): StoreDaddy {
-  const store = writable(_state);
-
-  /**
-   * Store Getter
-   */
-
-  function state(): State {
-    return get(store); // always get latest value
-  }
-
-  function getFilteredOptions() {
-    const { values, options, search } = state();
-    return options.filter(option => {
-      if (values.includes(option.value)) {
-        return false;
-      }
-
-      if (!option.value.toLowerCase().trim().startsWith(search.toLowerCase().trim())) {
-        return false;
-      }
-
-      return true;
-    });
-  }
-
+  
+  const search = writable("");
+  const value = writable("");
+  const values = writable([]);
+  const options = writable([]);
+  const multiple = writable(false);
 
   /**
    * Store Mutation/Setter
    */
 
-  function update(options) {
-    store.update((prevState: State): State => ({
-      ...prevState,
-      ...options
-    }))
+  
+  function addOption(_opt: SelectOption) {
+    const opt = get(options).slice();
+    opt.push(_opt);
+    options.update(() => opt);
+    
   }
 
-  function addOption(option: SelectOption) {
-    const options = JSON.parse(JSON.stringify(state().options));
-    options.push(option);
-    update({options});
-  }
-
-  function addOptions(options_: SelectOption[], clean: false) {
-    const options = clean ? [] : JSON.parse(JSON.stringify(state().options));
-    options.push(...options_);
-    update({options});
+  function addOptions(_opt: SelectOption[], clean: false) {
+    const opt = clean ? [] : get(options).slice();
+    opt.push(..._opt);
+    options.update(() => opt);
+    
   }
 
 
-  function setValue(value: string): void {
-    if (state().value !== value) {
-      update({value, values: []});
-    }
+  function setValue(val: string): void {
+    value.update(() => val);
   }
 
-  function setValues(values: string[]) {
-    update({values});
+  function setValues(v: string[]) {
+    values.update(() => v);
   }
 
-  function setMultiple( multiple = true) {
-    if(state().multiple !== multiple) {
-      update({multiple});
-    }
+  function setMultiple( multi = true) {
+    multiple.update(() => multi);
   }
 
-  function appendValue(value) {
-    const st = state();
+  function appendValue(value: string) {
     if (value) {
-      const index = st.values.findIndex(v => v === value);
-      const _values = st.values;
-      if (index === -1) {
+      const _values = get(values).slice();
+      const index = _values.findIndex(item => item === value);
+      if (index < 0) {
         _values.push(value);
-        update({values: _values});
+        values.update(() => _values);
       }
     }
+    
   }
 
   function clearByIndex(index) {
-    const { values } = state();
-    if (values[index]) {
-      values.splice(index, 1);
-      update({values});
+    const _values = get(values).slice();
+    if (_values[index]) {
+      _values.splice(index, 1);
+      values.update(() => _values);
     }
   }
 
   function clearValues() {
-    update({values: [], value: ""});
+    values.update(() => []);
+    value.update(() => "");
   }
 
-  function setSearch(search) {
-    update({search});
+  function setSearch(s) {
+    search.update(() => s);
   }
 
   function backspace() {
-    const { values } = state();
-    values.pop();
-    update({values, value: ""});
+    const _values = get(values).slice();
+    _values.pop();
+    values.update(() => _values);
+    value.update(() => "");
+    
   }
 
 
   return {
-    update: store.update,
-    subscribe: store.subscribe,
-    state,
     setValue,
     addOption,
     addOptions,
@@ -122,10 +87,16 @@ export function createStore(): StoreDaddy {
     setMultiple,
     appendValue,
     clearByIndex,
-    getFilteredOptions,
     clearValues,
     setSearch,
-    backspace
+    backspace,
+    
+    // vals
+    search,
+    value,
+    values,
+    multiple,
+    options
   }
 
 }

@@ -4,18 +4,7 @@ export interface SelectOption {
   disabled?: boolean;
 }
 
-export interface State {
-  search: string;
-  value: string;
-  values: string[];
-  options: SelectOption[];
-  multiple: boolean
-}
-
 export interface StoreDaddy {
-  update: Function;
-  subscribe: Function;
-  state(): State;
   setValue: Function;
   addOption: Function;
   addOptions: Function;
@@ -23,8 +12,14 @@ export interface StoreDaddy {
   setMultiple: Function;
   appendValue: Function;
   clearByIndex: Function;
-  getFilteredOptions: Function;
   clearValues: Function;
   setSearch: Function;
   backspace: Function;
+  
+  // writable
+  search: any;
+  value: any;
+  values: any;
+  options: any;
+  multiple: any
 }

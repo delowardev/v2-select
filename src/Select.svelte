@@ -3,7 +3,7 @@
   import ChevronDown from "./components/icons/ChevronDown.svelte";
   import Times from "./components/icons/Times.svelte";
   import { findText, simplifyArr } from "./helper";
-  import type { SelectOption, State } from "./interface";
+  import type { SelectOption } from "./interface";
   import { createStore } from "./store";
   import Search from "./Search.svelte";
   import { onMount } from "svelte";
@@ -13,17 +13,21 @@
    */
   
   const {
-    subscribe,
     addOptions,
     setValue,
     setValues,
     setMultiple,
     appendValue,
     clearByIndex,
-    getFilteredOptions,
     clearValues,
     setSearch,
-    backspace
+    backspace,
+    
+    search: stateSearch,
+    value: stateValue,
+    values: stateValues,
+    multiple: stateMultiple,
+    options: stateOptions
   } = createStore();
   
   /**
@@ -51,20 +55,48 @@
   let elemSearch;
   
   /**
-   * Store
+   * Store Subscribers
    */
-  
-  subscribe((state) => {
-    _onSubscribe(state);
+
+  stateMultiple.subscribe(v => multiple = v);
+  stateOptions.subscribe(v => {
+    options = v;
+    getFilteredOptions();
   });
+  stateSearch.subscribe(v => {
+    searchText = v;
+    getFilteredOptions();
+  })
+  stateValue.subscribe(v => {
+    value = v;
+    text = findText(options, v);
+    select.value = v;
+  });
+  stateValues.subscribe(v => {
+    values = v;
+    getFilteredOptions();
+    updateSelectElem();
+  });
+  
+  
+  
+  // default value
   addOptions(getInitialSelectOptions(), true);
-  setValue(getInitialValues()[0])
-  setValues(getInitialValues())
-  setMultiple(select?.multiple)
+  setMultiple(select?.multiple);
+  setValue(getInitialValues()[0]);
+  setValues(getInitialValues());
+  
   
   /**
    * Functions
    */
+
+  function getFilteredOptions() {
+    filteredOptions = options.filter(option => {
+      const _val = option.value.toLowerCase().trim();
+      return !values.includes(option.value) && _val.startsWith(searchText.toLowerCase());
+    });
+  }
   
   function getInitialSelectedOptions(): HTMLCollectionOf<HTMLOptionElement> {
     return select.selectedOptions;
@@ -78,36 +110,12 @@
     return Array.from(getInitialSelectedOptions()).map(({value}) => value);
   }
   
-  function _onSubscribe(_state: State): void {
-    const {
-      value: _value,
-      options: _options,
-      multiple: _multiple,
-      values: _values,
-      search: _search
-    } = _state;
-    updateValues(_value, _values);
-    multiple = _multiple;
-    options = _options;
-    filteredOptions = getFilteredOptions();
-    text = _value && options ? findText(_options, _value) : "";
-    searchText = _search
+  
+  function updateSelectElem() {
+    Array.from(select.options).forEach(option => {
+      option.selected = values.includes(option.value);
+    });
   }
-  
-  function updateValues(_value, _values) {
-    value = _value;
-    // select.value = value;
-    values = _values;
-    // updateSelectElem();
-  }
-  
-  
-  // function updateSelectElem() {
-  //   Array.from(select.options).forEach(option => {
-  //     option.selected = values.includes(option.value);
-  //   });
-  //   console.log(select.selectedOptions);
-  // }
   
   // handler functions
   
@@ -173,9 +181,7 @@
         e.preventDefault();
         _close();
       }
-      
     })
-    
   })
 
 </script>
