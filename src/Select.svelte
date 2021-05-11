@@ -70,21 +70,22 @@
   stateValue.subscribe(v => {
     value = v;
     text = findText(options, v);
-    select.value = v;
   });
   stateValues.subscribe(v => {
     values = v;
     getFilteredOptions();
-    updateSelectElem();
   });
   
   
   
   // default value
-  addOptions(getInitialSelectOptions(), true);
-  setMultiple(select?.multiple);
-  setValue(getInitialValues()[0]);
-  setValues(getInitialValues());
+  
+  function setDefaultValues() {
+    addOptions(getInitialSelectOptions(), true);
+    setMultiple(select?.multiple);
+    setValue(getInitialValues()[0]);
+    setValues(getInitialValues());
+  }
   
   
   /**
@@ -174,6 +175,7 @@
    */
   
   onMount(() => {
+    setDefaultValues();
     document.addEventListener('click', (e: MouseEvent) => {
       const closest = (e.target as HTMLElement).closest('.v2select');
       const condition = e.target === elemRoot || (closest && closest === elemRoot);

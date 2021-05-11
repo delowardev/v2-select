@@ -25,7 +25,6 @@ export function createStore(): StoreDaddy {
     const opt = clean ? [] : get(options).slice();
     opt.push(..._opt);
     options.update(() => opt);
-    
   }
 
 
@@ -34,6 +33,7 @@ export function createStore(): StoreDaddy {
   }
 
   function setValues(v: string[]) {
+    console.log(v);
     values.update(() => v);
   }
 
