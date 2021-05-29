@@ -9,7 +9,7 @@ export interface StoreDaddy {
   addOption: Function;
   addOptions: Function;
   setValues: Function;
-  setMultiple: Function;
+  // setMultiple: Function;
   appendValue: Function;
   clearByIndex: Function;
   clearValues: Function;
@@ -21,5 +21,5 @@ export interface StoreDaddy {
   value: any;
   values: any;
   options: any;
-  multiple: any
+  // multiple: any
 }

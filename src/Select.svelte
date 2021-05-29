@@ -16,7 +16,6 @@
     addOptions,
     setValue,
     setValues,
-    setMultiple,
     appendValue,
     clearByIndex,
     clearValues,
@@ -26,7 +25,6 @@
     search: stateSearch,
     value: stateValue,
     values: stateValues,
-    multiple: stateMultiple,
     options: stateOptions
   } = createStore();
   
@@ -46,10 +44,10 @@
   let value = "";
   let options = [];
   let text = "";
-  let multiple = false;
   let values = [];
   let filteredOptions = [];
   let searchText = "";
+  const multiple = select.multiple;
   // refs
   let elemRoot: HTMLDivElement;
   let elemSearch;
@@ -58,7 +56,6 @@
    * Store Subscribers
    */
 
-  stateMultiple.subscribe(v => multiple = v);
   stateOptions.subscribe(v => {
     options = v;
     getFilteredOptions();
@@ -70,23 +67,25 @@
   stateValue.subscribe(v => {
     value = v;
     text = findText(options, v);
+    updateMultiSelectElem();
   });
   stateValues.subscribe(v => {
     values = v;
     getFilteredOptions();
+    updateMultiSelectElem();
   });
-  
   
   
   // default value
   
   function setDefaultValues() {
     addOptions(getInitialSelectOptions(), true);
-    setMultiple(select?.multiple);
-    setValue(getInitialValues()[0]);
-    setValues(getInitialValues());
+    if (multiple) {
+      setValues(getInitialValues());
+    } else {
+      setValue(getInitialValues()[0]);
+    }
   }
-  
   
   /**
    * Functions
@@ -111,11 +110,16 @@
     return Array.from(getInitialSelectedOptions()).map(({value}) => value);
   }
   
-  
-  function updateSelectElem() {
-    Array.from(select.options).forEach(option => {
-      option.selected = values.includes(option.value);
-    });
+  function updateMultiSelectElem() {
+    setTimeout(() => {
+      if (multiple) {
+          Array.from(select.options).forEach(option => {
+            option.selected = values.includes(option.value);
+          });
+      } else {
+        select.value = value;
+      }
+    }, 50);
   }
   
   // handler functions

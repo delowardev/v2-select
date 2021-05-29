@@ -7,7 +7,7 @@ export function createStore(): StoreDaddy {
   const value = writable("");
   const values = writable([]);
   const options = writable([]);
-  const multiple = writable(false);
+  // const multiple = writable(false);
 
   /**
    * Store Mutation/Setter
@@ -33,13 +33,12 @@ export function createStore(): StoreDaddy {
   }
 
   function setValues(v: string[]) {
-    console.log(v);
     values.update(() => v);
   }
 
-  function setMultiple( multi = true) {
-    multiple.update(() => multi);
-  }
+  // function setMultiple( multi = true) {
+  //   multiple.update(() => multi);
+  // }
 
   function appendValue(value: string) {
     if (value) {
@@ -84,7 +83,7 @@ export function createStore(): StoreDaddy {
     addOption,
     addOptions,
     setValues,
-    setMultiple,
+    // setMultiple,
     appendValue,
     clearByIndex,
     clearValues,
@@ -95,7 +94,7 @@ export function createStore(): StoreDaddy {
     search,
     value,
     values,
-    multiple,
+    // multiple,
     options
   }
 

@@ -8,7 +8,7 @@ function SelectV2(node: HTMLSelectElement) {
 	
 	// node.style.display = "none";
 	const div = document.createElement("div");
-	document.body.insertBefore(div, node);
+	node.parentNode.insertBefore(div, node);
 	new App({
 		target: div,
 		props: {
