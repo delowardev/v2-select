@@ -1,6 +1,6 @@
 import App from './Select.svelte';
 
-function SelectV2(node: HTMLSelectElement) {
+export function SelectV2(node: HTMLSelectElement, options = {}) {
 	
 	if (!node || node.tagName !== "SELECT") {
 		throw new Error("Invalid argument!");
@@ -12,12 +12,24 @@ function SelectV2(node: HTMLSelectElement) {
 	new App({
 		target: div,
 		props: {
-			select: node
+			select: node,
+			selectOptions: options
 		}
 	})
 }
 
 window["SelectV2"] = SelectV2;
 
+const options = {
+	classes: {
+		container: "hello",
+		dropdown: "",
+		placeholder: ""
+	},
+	placeholder: "Seeeeelect...",
+	search: true,
+	noResultsText: "Noooooo!"
+}
+
 // dev preview
-document.querySelectorAll("select").forEach(node => window["SelectV2"](node))
+document.querySelectorAll("select").forEach(node => window["SelectV2"](node, options))
