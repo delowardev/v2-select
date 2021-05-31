@@ -2,9 +2,10 @@
   "name": "svelte-app",
   "version": "1.0.0",
   "private": true,
+  "main": "/public/build/bundle.js",
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "build": "rollup -c --input src/main.ts",
+    "dev": "rollup -c -w --input src/main-dev.ts",
     "start": "sirv public --no-clear",
     "validate": "svelte-check"
   },
