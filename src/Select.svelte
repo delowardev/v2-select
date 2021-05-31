@@ -39,7 +39,8 @@
     placeholder?: string;
     search?: boolean;
     noResultsText?: string;
-    optionMarkup: (string) => string | null
+    renderOption: (string) => string | null
+    renderValue: (string) => string | null
   }
   
   // Default options
@@ -53,7 +54,8 @@
     placeholder: "Select",
     search: true,
     noResultsText: "No options found!",
-    optionMarkup: null
+    renderOption: null,
+    renderValue: null
   }
   
   /**
@@ -248,7 +250,13 @@
           <div class="v2select__multi-values">
             {#each values as val, i}
               <div class="v2select__multi-value">
-                <span class="v2select__multi-label">{ findText(options, val) }</span>
+                <span class="v2select__multi-label">
+                  {#if (selectOptions.renderValue)}
+                    {@html selectOptions.renderValue(findText(options, val)) || findText(options, val)}
+                  {:else}
+                    { findText(options, val) }
+                  {/if}
+                </span>
                 <button
                   on:click|stopPropagation|capture={_clearByIndex.bind(this, i)}
                   class="v2select__multi-close"
@@ -293,7 +301,13 @@
         {/if}
         {#if !searchText}
           {#if !!value}
-            <div class="v2select__single-value">{text}</div>
+            <div class="v2select__single-value">
+              {#if (selectOptions.renderValue)}
+                {@html selectOptions.renderValue(text) || text}
+              {:else}
+                {text}
+              {/if}
+            </div>
           {:else}
             <div class="v2select__placeholder">{selectOptions.placeholder}</div>
           {/if}
@@ -341,8 +355,8 @@
                 () => option.disabled ? null : _select(option.value)
               }
             >
-              {#if (selectOptions.optionMarkup)}
-                {@html selectOptions.optionMarkup(option.text)}
+              {#if (selectOptions.renderOption)}
+                {@html selectOptions.renderOption(option.text) || option.text}
               {:else }
                 {option.text}
               {/if}

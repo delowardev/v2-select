@@ -26,8 +26,7 @@ const defaultOptions = {
     placeholder: "Select",
     search: true,
     noResultsText: "No options found!",
-    optionMarkup: text => {
-        return text;
-    }
+    renderOption: null, // or (option_text) => option_text
+    renderValue: null, // or (value) => value
   }
 ```
