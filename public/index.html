@@ -10,8 +10,6 @@
 	<link rel='stylesheet' href='/global.css'>
 	<link rel='stylesheet' href='/build/bundle.css'>
 
-	<script defer src='/build/bundle.js'></script>
-
 
 </head>
 <body style="padding: 40px 0;">
@@ -98,6 +96,12 @@
   <br>
 
 </form>
+
+
+<script src='/build/bundle.js'></script>
+<script>
+  document.querySelectorAll("select").forEach(node => window["SelectV2"](node))
+</script>
 
 </body>
 </html>

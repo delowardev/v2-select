@@ -4,8 +4,8 @@
   "private": true,
   "main": "/public/build/bundle.js",
   "scripts": {
-    "build": "rollup -c --input src/main.ts",
-    "dev": "rollup -c -w --input src/main-dev.ts",
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
     "start": "sirv public --no-clear",
     "validate": "svelte-check"
   },
