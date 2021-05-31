@@ -101,11 +101,7 @@
 <script src='/build/bundle.js'></script>
 <script>
   document.querySelectorAll("select").forEach(node => {
-    SelectV2(node, {
-      renderOption: function(value) {
-        return `<span style="color: red">${value}</span>`
-      }
-    });
+    SelectV2(node);
   })
 </script>
 
