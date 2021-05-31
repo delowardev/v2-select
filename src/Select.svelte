@@ -39,6 +39,7 @@
     placeholder?: string;
     search?: boolean;
     noResultsText?: string;
+    optionMarkup: (string) => string | null
   }
   
   // Default options
@@ -51,7 +52,8 @@
     },
     placeholder: "Select",
     search: true,
-    noResultsText: "No options found!"
+    noResultsText: "No options found!",
+    optionMarkup: null
   }
   
   /**
@@ -339,7 +341,11 @@
                 () => option.disabled ? null : _select(option.value)
               }
             >
-              {option.text}
+              {#if (selectOptions.optionMarkup)}
+                {@html selectOptions.optionMarkup(option.text)}
+              {:else }
+                {option.text}
+              {/if}
             </button>
           {/each}
         {:else}

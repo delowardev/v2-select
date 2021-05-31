@@ -8,7 +8,10 @@ export const options = {
   },
   placeholder: "Seeeeelect...",
   search: true,
-  noResultsText: "Noooooo!"
+  noResultsText: "Noooooo!",
+  optionMarkup: text => {
+    return  `<div class="monster">xd ${text}</div>`
+  }
 }
 
 // dev preview
