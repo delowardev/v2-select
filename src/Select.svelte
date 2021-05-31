@@ -51,7 +51,7 @@
     },
     placeholder: "Select",
     search: true,
-    noResultsText: "Noooooo!"
+    noResultsText: "No options found!"
   }
   
   /**
