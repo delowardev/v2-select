@@ -92,7 +92,7 @@ $danger-light: #ffbdad;
     }
     &:last-child {
       border-radius: 0 $radius $radius 0;
-      &:not(:first-child)::before {
+      &::before {
         content: "";
         height: 50%;
         width: 1px;
