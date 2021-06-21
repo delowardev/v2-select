@@ -40,7 +40,8 @@
     search?: boolean;
     noResultsText?: string;
     renderOption: (string) => string | null
-    renderValue: (string) => string | null
+    renderValue: (string) => string | null,
+    clearable: boolean
   }
   
   // Default options
@@ -55,7 +56,8 @@
     search: true,
     noResultsText: "No options found!",
     renderOption: null,
-    renderValue: null
+    renderValue: null,
+    clearable: true
   }
   
   /**
@@ -258,7 +260,7 @@
                   {/if}
                 </span>
                 <button
-                  on:click|stopPropagation|capture={_clearByIndex.bind(this, i)}
+                  on:click|stopPropagation|capture|preventDefault={_clearByIndex.bind(this, i)}
                   class="v2select__multi-close"
                 >
                   <Times />
@@ -316,13 +318,13 @@
     </div>
     <div class="v2select__buttons">
       {#if multiple}
-        {#if values.length}
+        {#if values.length && selectOptions.clearable}
           <button on:click|preventDefault={_clearValues} class="v2select__btn">
             <Times/>
           </button>
         {/if}
       {:else}
-        {#if !!value}
+        {#if !!value && selectOptions.clearable}
           <button on:click|preventDefault={_clearValues} class="v2select__btn">
             <Times/>
           </button>
@@ -351,7 +353,7 @@
                 selectOptions.classes.dropdown
               )}
               tabindex={option.disabled ? '-1' : '0'}
-              on:click={
+              on:click|preventDefault={
                 () => option.disabled ? null : _select(option.value)
               }
             >

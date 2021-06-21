@@ -28,5 +28,6 @@ const defaultOptions = {
     noResultsText: "No options found!",
     renderOption: null, // or (option_text) => option_text
     renderValue: null, // or (value) => value
+    clearable: true
   }
 ```
