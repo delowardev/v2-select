@@ -1,4 +1,4 @@
-*Looking for live preview? Go here --> [https://v2-select.vercel.app/](https://v2-select.vercel.app/)*
+*Looking for live preview? Click here --> [https://v2-select.vercel.app/](https://v2-select.vercel.app/)*
 
 
 ### How to use?
