@@ -1,18 +1,18 @@
 <script lang="ts">
   import clsx from "clsx";
+  import { onDestroy,onMount } from "svelte";
+  import { fly,scale } from "svelte/transition";
   import ChevronDown from "./components/icons/ChevronDown.svelte";
   import Times from "./components/icons/Times.svelte";
   import { findText } from "./helper";
   import type { SelectOption } from "./interface";
-  import { createStore } from "./store";
   import Search from "./Search.svelte";
-  import { onMount, onDestroy } from "svelte";
-  import { fly, scale } from "svelte/transition"
-  
+  import { createStore } from "./store";
+
   /**
    * Constant
    */
-  
+
   const {
     addOptions,
     setValue,
@@ -22,13 +22,13 @@
     clearValues,
     setSearch,
     backspace,
-    
+
     search: stateSearch,
     value: stateValue,
     values: stateValues,
     options: stateOptions
   } = createStore();
-  
+
   interface SelectOptions {
     classes?: {
       container?: string;
@@ -45,7 +45,7 @@
     clearable: boolean;
     callback: any;
   }
-  
+
   interface Callback {
     onBeforeOpen: (() => boolean) | null;
     onOpen: (() => void) | null;
@@ -61,7 +61,7 @@
     onMenuScrollTop: (() => void) | null;
     onMenuScrollEnd: (() => void) | null;
   }
-  
+
   // Default options
   const defaultOptions: SelectOptions = {
     classes: {
@@ -94,27 +94,27 @@
       onMenuScrollEnd: null
     }
   }
-  
+
   /**
    * Props
    */
-  
+
   export let select: HTMLSelectElement;
   export let selectOptions: SelectOptions;
 
   selectOptions.classes = Object.assign({}, defaultOptions.classes, selectOptions.classes);
   selectOptions.callback = <Callback> Object.assign({}, defaultOptions.callback, selectOptions.callback);
-  export const _options = <SelectOptions> Object.assign({}, defaultOptions, selectOptions);
-  
-  
-  
+  const _options = <SelectOptions> Object.assign({}, defaultOptions, selectOptions);
+
+
+
   // ... //
   select.style.display = "none";
-  
+
   /**
    * Variables
    */
-  
+
   let open = false;
   let focused = false;
   let value = "";
@@ -128,8 +128,8 @@
   let elemRoot: HTMLDivElement;
   let elemControl: HTMLDivElement;
   let elemSearch;
-  
-  
+
+
   /**
    * Store Subscribers
    */
@@ -152,10 +152,10 @@
     getFilteredOptions();
     updateMultiSelectElem();
   });
-  
-  
+
+
   // default value
-  
+
   function setDefaultValues() {
     addOptions(getInitialSelectOptions(), true);
     if (multiple) {
@@ -164,7 +164,7 @@
       setValue(getInitialValues()[0]);
     }
   }
-  
+
   /**
    * Functions
    */
@@ -175,19 +175,19 @@
       return !values.includes(option.value) && _val.startsWith(searchText.toLowerCase());
     });
   }
-  
+
   function getInitialSelectedOptions(): HTMLCollectionOf<HTMLOptionElement> {
     return select.selectedOptions;
   }
-  
+
   function getInitialSelectOptions(): SelectOption[] {
     return Array.from(select.options).map(({value, text, disabled}) => ({value, text, disabled}));
   }
-  
+
   function getInitialValues(): String[] {
     return Array.from(getInitialSelectedOptions()).map(({value}) => value);
   }
-  
+
   function updateMultiSelectElem() {
     setTimeout(() => {
       if (multiple) {
@@ -199,32 +199,63 @@
       }
     }, 50);
   }
-  
+
   // handler functions
-  
+
   const {
     onBeforeOpen,
     onOpen,
     onBeforeClose,
     onClose,
     onFocus,
-    onBlur
+    onBlur,
+    onBeforeChange,
+    onChange
   } = _options.callback as Callback
-  
+
+  /**
+   * Change/Set select value
+   * @param value
+   */
+
   function _select(value) {
+
+    // callback onBeforeChange
+    if (
+      onBeforeChange instanceof Function &&
+      onBeforeChange() === false
+    ) {
+      return false
+    }
+
     setSearch("");
+
     if (multiple) {
       appendValue(value);
-      return;
+    } else {
+      setValue(value);
     }
-    setValue(value);
-    _close();
+
+    // callback onChange
+    if ( onChange instanceof Function ) {
+      onChange()
+    }
+
+    if ( ! multiple ) {
+      _close();
+    }
+
+    return true
+
   }
 
 
+  /**
+   * Open Dropdown
+   */
   function _open() {
     if ( open ) return false
-  
+
     // callback onBeforeOpen
     if ( onBeforeOpen instanceof Function ) {
       if ( onBeforeOpen() !== false ) {
@@ -232,20 +263,23 @@
       }
       return false
     }
-    
+
     open = true
-  
+
     // callback onOpen
     if (onOpen) {
       onOpen()
     }
-  
+
     return true
   }
-  
+
+  /**
+   * Close dropdown
+   */
   function _close() {
     if ( !open ) return false;
-  
+
     // callback onBeforeClose
     if ( onBeforeClose instanceof Function ) {
       if ( onBeforeClose() !== false ) {
@@ -253,17 +287,20 @@
       }
       return false;
     }
-    
+
     open = false
-  
+
     // callback onClose
     if ( onClose ) {
       onClose()
     }
-    
+
     return true
   }
-  
+
+  /**
+   * Toggle dropdown
+   */
   function _toggle() {
     if ( open ) {
       _close()
@@ -272,48 +309,56 @@
     }
     return open;
   }
-  
+
+  /**
+   * Focus select
+   */
   function _focus () {
     if ( focused ) return false;
-    
+  
+    // callback onFocus
     if ( onFocus instanceof Function) {
       onFocus()
     }
-    
+
     return ( focused = true )
   }
-  
+
+  /**
+   * Blur select
+   */
   function _blur () {
     if ( ! focused ) return false;
-    
+  
+    // callback onBlur
     if ( onBlur instanceof Function ) {
       onBlur()
     }
-    
+
     return ! ( focused = false )
   }
-  
+
   function _clearByIndex(index) {
-    clearByIndex(index);
+    return clearByIndex(index);
   }
-  
+
   function _clearValues() {
     clearValues();
     setSearch("");
   }
-  
+
   function _handleOnClickValue() {
     _toggle();
     if (elemSearch) {
       elemSearch.focus();
     }
   }
-  
-  
+
+
   /**
    * Custom events func
    */
-  
+
   function _setSearch (e) {
     const _value = e.detail.value;
     setSearch(_value);
@@ -321,34 +366,46 @@
       open = true;
     }
   }
-  
+
   function _backspace() {
     backspace();
   }
-  
+
   /**
    * Accessible methods
    */
-  
+
 
   export function __open () {
     return _open()
   }
-  
+
   export function __close () {
     return _close()
   }
-  
+
   export function __toggle () {
     return _toggle()
   }
-  
+
   export function __focus () {
     return _focus()
   }
-  
+
   export function __blur () {
     return _blur()
+  }
+
+  export function __select ( value: string ) {
+    return _select( value )
+  }
+  
+  export function __clearByIndex ( index: number ) {
+    return _clearByIndex( index )
+  }
+  
+  export function __clear ( ) {
+    return _clearValues ()
   }
 
   interface Methods {
@@ -356,7 +413,10 @@
     blur: () => boolean;
     toggle: () => boolean;
     close: () => boolean;
-    open: () => boolean
+    open: () => boolean;
+    select: ( value: string ) => boolean;
+    clearByIndex: ( index: number ) => boolean;
+    clear: () => void;
   }
 
   export const methods: Methods = {
@@ -364,16 +424,20 @@
     close: __close,
     toggle: __toggle,
     focus: __focus,
-    blur: __blur
+    blur: __blur,
+    select: __select,
+    clearByIndex: __clearByIndex,
+    clear: __clear
   }
-  
+
   /**
    * Lifecycle
    */
-  
+
   onMount(() => {
     setDefaultValues();
     DOMEventListeners();
+    console.log(elemSearch)
   })
 
   onDestroy(() => {
@@ -404,7 +468,7 @@
   function cbMouseenter ( e: MouseEvent ) {
     _focus()
   }
-  
+
   /**
    * onBlur / mouseleave
    * @mouseevent
@@ -432,12 +496,12 @@
     elemControl.removeEventListener('mouseenter', cbMouseenter)
     elemControl.removeEventListener('mouseleave', cbMouseleave)
   }
-  
+
   /*
    * Transitions
    */
-  
-  
+
+
 
   /**
    * Computed
@@ -453,7 +517,7 @@
       !!value
     )
   )
-  
+
 
 </script>
 

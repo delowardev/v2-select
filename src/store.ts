@@ -57,7 +57,10 @@ export function createStore(): StoreDaddy {
     if (_values[index]) {
       _values.splice(index, 1);
       values.update(() => _values);
+      return true
     }
+    console.warn(`No element found at index ${index}`)
+    return false
   }
 
   function clearValues() {
@@ -73,8 +76,6 @@ export function createStore(): StoreDaddy {
     const _values = get(values).slice();
     _values.pop();
     values.update(() => _values);
-    value.update(() => "");
-    
   }
 
 

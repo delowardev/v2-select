@@ -7,14 +7,12 @@
   export let search: string;
   export let right: boolean;
   // elem binding
-  let elemSearch: HTMLSpanElement;
+  let elem: HTMLSpanElement;
   
   
   export function focus() {
-    if (elemSearch) {
-      elemSearch.focus();
-      elemSearch.removeEventListener("keydown", onDelete);
-      elemSearch.addEventListener("keydown", onDelete);
+    if (elem) {
+      elem.focus();
     }
   }
   
@@ -30,14 +28,26 @@
       dispatch('backspace');
     }
   }
+  
+  function bindEvents () {
+    console.log('bind');
+    elem.addEventListener("keydown", onDelete);
+  }
+  
+  function unbindEvents () {
+    console.log('unbind');
+    elem.removeEventListener("keydown", onDelete);
+  }
 
 </script>
 
 <div class="v2select__search">
   <span
+    on:focus={bindEvents}
+    on:blur={unbindEvents}
     on:input={_search}
     contenteditable="true"
-    bind:this={elemSearch}
+    bind:this={elem}
     bind:textContent={search}
     class={clsx('v2select__search-skeleton', {
       'v2select__is-left': !right,
