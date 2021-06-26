@@ -45,6 +45,22 @@
     callback: any;
   }
   
+  interface Callback {
+    onBeforeOpen: (() => boolean) | null;
+    onOpen: (() => void) | null;
+    onBeforeClose: (() => boolean) | null;
+    onClose: (() => void) | null;
+    onBeforeChange: (() => boolean) | null;
+    onChange: (() => void) | null;
+    onFocus: (() => void) | null;
+    onBlur: (() => void) | null;
+    onKeyDown: (() => void) | null;
+    onKeyUp: (() => void) | null;
+    onKeyPress: (() => void) | null;
+    onMenuScrollTop: (() => void) | null;
+    onMenuScrollEnd: (() => void) | null;
+  }
+  
   // Default options
   const defaultOptions: SelectOptions = {
     classes: {
@@ -86,7 +102,8 @@
   export let selectOptions: SelectOptions;
 
   selectOptions.classes = Object.assign({}, defaultOptions.classes, selectOptions.classes);
-  selectOptions = Object.assign({}, defaultOptions, selectOptions);
+  selectOptions.callback = <Callback> Object.assign({}, defaultOptions.callback, selectOptions.callback);
+  export const _options = <SelectOptions> Object.assign({}, defaultOptions, selectOptions);
   
   
   
@@ -181,6 +198,11 @@
   
   // handler functions
   
+  const {
+    onBeforeClose,
+    onBeforeOpen
+  } = _options.callback as Callback
+  
   function _select(value) {
     setSearch("");
     if (multiple) {
@@ -190,15 +212,32 @@
     setValue(value);
     _close();
   }
+
+
+  function _open() {
+    if ( open ) return false;
+  
+    if ( onBeforeOpen ) {
+      if ( onBeforeOpen() !== false ) {
+        return open = true;
+      }
+      return false;
+    }
+  
+    return open = true;
+  }
   
   function _close() {
     if ( !open ) return false;
-    return open = false;
-  }
+    
+    if ( onBeforeClose ) {
+      if ( onBeforeClose() !== false ) {
+        return ! ( open = false );
+      }
+      return false;
+    }
   
-  function _open() {
-    if (open ) return false;
-    return ! (open = true);
+    return ! ( open = false );
   }
   
   function _toggle() {
@@ -207,6 +246,7 @@
     } else {
       _open()
     }
+    return open;
   }
   
   function _clearByIndex(index) {
@@ -249,21 +289,27 @@
   interface Methods {
     open: () => boolean;
     close: () => boolean;
+    toggle: () => boolean;
   }
   
   export const methods = <Methods>{}
 
-  export function __open() {
-    return _open();
+  export function __open () {
+    return _open()
   }
   
-  export function __close() {
-    return _close();
+  export function __close () {
+    return _close()
+  }
+  
+  export function __toggle () {
+    return _toggle()
   }
   
   
   methods.open = __open
   methods.close = __close
+  methods.toggle = __toggle
   
   /**
    * Lifecycle
@@ -289,13 +335,13 @@
     v2select__multiple: multiple,
     v2select__single: !multiple
   },
-  selectOptions.classes.container
+  _options.classes.container
 )}>
   <div
     class={clsx(
       'v2select__controls',
       { 'v2select__controls--is-selected': open },
-      selectOptions.classes.controls
+      _options.classes.controls
     )}
   >
     <div on:click={_handleOnClickValue} class="v2select__values">
@@ -305,8 +351,8 @@
             {#each values as val, i}
               <div class="v2select__multi-value">
                 <span class="v2select__multi-label">
-                  {#if (selectOptions.renderValue)}
-                    {@html selectOptions.renderValue(findText(options, val)) || findText(options, val)}
+                  {#if (_options.renderValue)}
+                    {@html _options.renderValue(findText(options, val)) || findText(options, val)}
                   {:else}
                     { findText(options, val) }
                   {/if}
@@ -319,7 +365,7 @@
                 </button>
               </div>
             {/each}
-            {#if (selectOptions.search)}
+            {#if (_options.search)}
               <Search
                 right={true}
                 bind:this={elemSearch}
@@ -330,7 +376,7 @@
             {/if}
           </div>
         {:else }
-          {#if (selectOptions.search)}
+          {#if (_options.search)}
             <Search
               right={false}
               bind:this={elemSearch}
@@ -340,11 +386,11 @@
             />
           {/if}
           {#if !searchText}
-            <div class="v2select__placeholder">{selectOptions.placeholder}</div>
+            <div class="v2select__placeholder">{_options.placeholder}</div>
           {/if}
         {/if}
       {:else }
-        {#if (selectOptions.search)}
+        {#if (_options.search)}
           <Search
             right={false}
             bind:this={elemSearch}
@@ -356,27 +402,27 @@
         {#if !searchText}
           {#if !!value}
             <div class="v2select__single-value">
-              {#if (selectOptions.renderValue)}
-                {@html selectOptions.renderValue(text) || text}
+              {#if (_options.renderValue)}
+                {@html _options.renderValue(text) || text}
               {:else}
                 {text}
               {/if}
             </div>
           {:else}
-            <div class="v2select__placeholder">{selectOptions.placeholder}</div>
+            <div class="v2select__placeholder">{_options.placeholder}</div>
           {/if}
         {/if}
       {/if}
     </div>
     <div class="v2select__buttons">
       {#if multiple}
-        {#if values.length && selectOptions.clearable}
+        {#if values.length && _options.clearable}
           <button on:click|preventDefault={_clearValues} class="v2select__btn">
             <Times/>
           </button>
         {/if}
       {:else}
-        {#if !!value && selectOptions.clearable}
+        {#if !!value && _options.clearable}
           <button on:click|preventDefault={_clearValues} class="v2select__btn">
             <Times/>
           </button>
@@ -390,7 +436,7 @@
   {#if open}
     <div class={clsx(
       "v2select__dropdown",
-      selectOptions.classes.dropdownRoot
+      _options.classes.dropdownRoot
     )}>
       <div class="v2select__dropdown-inner">
         {#if Array.isArray(filteredOptions) && filteredOptions.length}
@@ -402,22 +448,22 @@
                   'v2select__dropdown--selected': option.value === value && !multiple,
                   'v2select__dropdown--is-disabled': option.disabled === true
                 },
-                selectOptions.classes.dropdown
+                _options.classes.dropdown
               )}
               tabindex={option.disabled ? '-1' : '0'}
               on:click|preventDefault={
                 () => option.disabled ? null : _select(option.value)
               }
             >
-              {#if (selectOptions.renderOption)}
-                {@html selectOptions.renderOption(option.text) || option.text}
+              {#if (_options.renderOption)}
+                {@html _options.renderOption(option.text) || option.text}
               {:else }
                 {option.text}
               {/if}
             </button>
           {/each}
         {:else}
-          <span class="v2select__dropdown-placeholder">{selectOptions.noResultsText}</span>
+          <span class="v2select__dropdown-placeholder">{_options.noResultsText}</span>
         {/if}
       </div>
     </div>
