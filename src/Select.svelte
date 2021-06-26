@@ -199,8 +199,10 @@
   // handler functions
   
   const {
+    onBeforeOpen,
+    onOpen,
     onBeforeClose,
-    onBeforeOpen
+    onClose,
   } = _options.callback as Callback
   
   function _select(value) {
@@ -215,29 +217,45 @@
 
 
   function _open() {
-    if ( open ) return false;
+    if ( open ) return false
   
+    // callback onBeforeOpen
     if ( onBeforeOpen ) {
       if ( onBeforeOpen() !== false ) {
-        return open = true;
+        return open = true
       }
-      return false;
+      return false
+    }
+    
+    open = true
+  
+    // callback onOpen
+    if (onOpen) {
+      onOpen()
     }
   
-    return open = true;
+    return true
   }
   
   function _close() {
     if ( !open ) return false;
-    
+  
+    // callback onBeforeClose
     if ( onBeforeClose ) {
       if ( onBeforeClose() !== false ) {
         return ! ( open = false );
       }
       return false;
     }
+    
+    open = false
   
-    return ! ( open = false );
+    // callback onClose
+    if ( onClose ) {
+      onClose()
+    }
+    
+    return true
   }
   
   function _toggle() {
@@ -290,6 +308,7 @@
     open: () => boolean;
     close: () => boolean;
     toggle: () => boolean;
+    clear: () => boolean;
   }
   
   export const methods = <Methods>{}
