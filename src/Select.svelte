@@ -7,7 +7,7 @@
   import { createStore } from "./store";
   import Search from "./Search.svelte";
   import { onMount, onDestroy } from "svelte";
-  import { fade } from "svelte/transition"
+  import { fly, scale } from "svelte/transition"
   
   /**
    * Constant
@@ -299,7 +299,7 @@
   
   function _clearValues() {
     clearValues();
-    _close();
+    setSearch("");
   }
   
   function _handleOnClickValue() {
@@ -437,14 +437,7 @@
    * Transitions
    */
   
-  const buttonIn = {
-    duration: 350,
-    delay: 50
-  }
   
-  const buttonOut = {
-    duration: 150
-  }
 
   /**
    * Computed
@@ -486,7 +479,7 @@
         {#if Array.isArray(values) && values.length}
           <div class="v2select__multi-values">
             {#each values as val, i}
-              <div class="v2select__multi-value">
+              <div class="v2select__multi-value" in:fly>
                 <span class="v2select__multi-label">
                   {#if (_options.renderValue)}
                     {@html _options.renderValue(findText(options, val)) || findText(options, val)}
@@ -553,18 +546,18 @@
     </div>
     <div class="v2select__buttons">
         {#if clearButton }
-          <button in:fade={buttonIn} out:fade={buttonOut} on:click|preventDefault={_clearValues} class="v2select__btn v2select__btn--close">
+          <button in:scale={{ duration: 150 }} out:fly on:click|preventDefault={_clearValues} class="v2select__btn v2select__btn--close">
             <Times/>
           </button>
         {:else }
-          <button in:fade={buttonIn} out:fade={buttonOut} on:click|stopPropagation|capture|preventDefault={_toggle} class="v2select__btn v2select__btn--arrow">
+          <button in:scale={{ duration: 150 }} out:fly on:click|stopPropagation|capture|preventDefault={_toggle} class="v2select__btn v2select__btn--arrow">
             <ChevronDown />
           </button>
         {/if}
     </div>
   </div>
   {#if open}
-    <div class={clsx(
+    <div in:fly class={clsx(
       "v2select__dropdown",
       _options.classes.dropdownRoot
     )}>
