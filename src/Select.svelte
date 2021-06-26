@@ -546,11 +546,21 @@
     </div>
     <div class="v2select__buttons">
         {#if clearButton }
-          <button in:scale={{ duration: 150 }} out:fly on:click|preventDefault={_clearValues} class="v2select__btn v2select__btn--close">
+          <button
+            in:scale={{ duration: 150 }}
+            out:fly
+            on:click|preventDefault={_clearValues}
+            class="v2select__btn v2select__btn--close"
+          >
             <Times/>
           </button>
         {:else }
-          <button in:scale={{ duration: 150 }} out:fly on:click|stopPropagation|capture|preventDefault={_toggle} class="v2select__btn v2select__btn--arrow">
+          <button
+            in:scale={{ duration: 150 }}
+            out:fly
+            on:click|stopPropagation|capture|preventDefault={_toggle}
+            class="v2select__btn v2select__btn--arrow"
+          >
             <ChevronDown />
           </button>
         {/if}

@@ -147,33 +147,14 @@ $danger-light: #ffbdad;
     transition: $transition;
     position: absolute;
     background: white;
-    //opacity: 0;
-    //visibility: hidden;
     &:focus {
       color: $color-primary !important;
     }
     &:hover {
       color: $color-grey-dark;
     }
-    //&.v2select__btn--arrow {
-    //  opacity: 1;
-    //  visibility: visible;
-    //}
   }
 }
-
-//.v2select__controls.v2select__controls--is-focused {
-//  .v2select__buttons .v2select__btn {
-//    &.v2select__btn--arrow {
-//      opacity: 0;
-//      visibility: hidden;
-//    }
-//    &.v2select__btn--close {
-//      opacity: 1;
-//      visibility: visible;
-//    }
-//  }
-//}
 
 /**
  * Dropdown
