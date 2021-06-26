@@ -354,16 +354,18 @@
     }
   }
 
+  function _search ( value: string ) {
+    return setSearch( value )
+  }
 
   /**
    * Custom events func
    */
 
   function _setSearch (e) {
-    const _value = e.detail.value;
-    setSearch(_value);
-    if (value && !open) {
-      open = true;
+    _search(e.detail.value);
+    if (value) {
+      _open()
     }
   }
 
@@ -405,7 +407,15 @@
   }
   
   export function __clear ( ) {
-    return _clearValues ()
+    return _clearValues()
+  }
+  
+  export function __search ( value: string ) {
+    return _search( value )
+  }
+  
+  export function __clearSearch () {
+    return _search( "" )
   }
 
   interface Methods {
@@ -417,6 +427,8 @@
     select: ( value: string ) => boolean;
     clearByIndex: ( index: number ) => boolean;
     clear: () => void;
+    search: ( value: string ) => void;
+    clearSearch: () => void;
   }
 
   export const methods: Methods = {
@@ -427,7 +439,9 @@
     blur: __blur,
     select: __select,
     clearByIndex: __clearByIndex,
-    clear: __clear
+    clear: __clear,
+    search: __search,
+    clearSearch: __clearSearch
   }
 
   /**

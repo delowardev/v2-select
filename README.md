@@ -4,7 +4,7 @@
 ### How to use?
 
 ```javascript
-    const selectInstance = SelectV2(document.querySelector("select"), {});
+const selectInstance = SelectV2(document.querySelector("select"), {});
 ```
 
 
@@ -59,18 +59,26 @@ const {
     blur,
     select,
     clearByIndex,
-    clear
+    clear,
+    search,
+    clearSearch
 } = selectInstance.methods;
 
-// or access directly
-selectInstance.__open,
-selectInstance.__close,
-selectInstance.__toggle,
-selectInstance.__focus,
-selectInstance.__blur,
-selectInstance.__select,
-selectInstance.__clearByIndex,
-selectInstance.__clear
+/*
+// also methods can be access directly form the instance
+const {
+  __open: open,
+  __close: close,
+  __toggle: toggle,
+  __focus: focus,
+  __blur: blur,
+  __select: select,
+  __clearByIndex: clearByIndex,
+  __clear: clear,
+  __search: search,
+  __clearSearch: clearSearch
+} = selectInstance;
+*/
 
 // Example
 selectInstance.methods.clearByIndex(2)
@@ -86,6 +94,8 @@ interface Methods {
     select: ( value: string ) => boolean;
     clearByIndex: ( index: number ) => boolean;
     clear: () => void;
+    search: ( value: string ) => void;
+    clearSearch: () => void;
 }
 
 ```
