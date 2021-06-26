@@ -100,8 +100,10 @@
 
 <script src='/build/bundle.js'></script>
 <script>
+  
+  window["__select"] = [];
   document.querySelectorAll("select").forEach(node => {
-    SelectV2(node);
+    window["__select"].push(SelectV2(node))
   })
 </script>
 

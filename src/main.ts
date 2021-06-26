@@ -9,7 +9,7 @@ export function SelectV2(node: HTMLSelectElement, options = {}) {
 	// node.style.display = "none";
 	const div = document.createElement("div");
 	node.parentNode.insertBefore(div, node);
-	new App({
+	return new App({
 		target: div,
 		props: {
 			select: node,

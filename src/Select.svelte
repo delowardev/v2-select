@@ -39,9 +39,10 @@
     placeholder?: string;
     search?: boolean;
     noResultsText?: string;
-    renderOption: (string) => string | null
-    renderValue: (string) => string | null,
-    clearable: boolean
+    renderOption: (string) => string | null;
+    renderValue: (string) => string | null;
+    clearable: boolean;
+    callback: any;
   }
   
   // Default options
@@ -57,7 +58,24 @@
     noResultsText: "No options found!",
     renderOption: null,
     renderValue: null,
-    clearable: true
+    clearable: true,
+    callback: {
+      onBeforeOpen: null,
+      onOpen: null,
+      onBeforeClose: null,
+      onClose: null,
+      onBeforeChange: null,
+      onChange: null,
+      onFocus: null,
+      onBlur: null,
+      // keyboard
+      onKeyDown: null,
+      onKeyUp: null,
+      onKeyPress: null,
+      // scroll
+      onMenuScrollTop: null,
+      onMenuScrollEnd: null
+    }
   }
   
   /**
@@ -174,11 +192,21 @@
   }
   
   function _close() {
-    open = false;
+    if ( !open ) return false;
+    return open = false;
+  }
+  
+  function _open() {
+    if (open ) return false;
+    return ! (open = true);
   }
   
   function _toggle() {
-    open = !open;
+    if (open) {
+      _close()
+    } else {
+      _open()
+    }
   }
   
   function _clearByIndex(index) {
@@ -197,6 +225,7 @@
     }
   }
   
+  
   /**
    * Custom events func
    */
@@ -212,6 +241,29 @@
   function _backspace() {
     backspace();
   }
+  
+  /**
+   * Accessible methods
+   */
+  
+  interface Methods {
+    open: () => boolean;
+    close: () => boolean;
+  }
+  
+  export const methods = <Methods>{}
+
+  export function __open() {
+    return _open();
+  }
+  
+  export function __close() {
+    return _close();
+  }
+  
+  
+  methods.open = __open
+  methods.close = __close
   
   /**
    * Lifecycle
