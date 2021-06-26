@@ -6,7 +6,8 @@
   import type { SelectOption } from "./interface";
   import { createStore } from "./store";
   import Search from "./Search.svelte";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
+  import { fade } from "svelte/transition"
   
   /**
    * Constant
@@ -115,6 +116,7 @@
    */
   
   let open = false;
+  let focused = false;
   let value = "";
   let options = [];
   let text = "";
@@ -124,7 +126,9 @@
   const multiple = select.multiple;
   // refs
   let elemRoot: HTMLDivElement;
+  let elemControl: HTMLDivElement;
   let elemSearch;
+  
   
   /**
    * Store Subscribers
@@ -203,6 +207,8 @@
     onOpen,
     onBeforeClose,
     onClose,
+    onFocus,
+    onBlur
   } = _options.callback as Callback
   
   function _select(value) {
@@ -220,7 +226,7 @@
     if ( open ) return false
   
     // callback onBeforeOpen
-    if ( onBeforeOpen ) {
+    if ( onBeforeOpen instanceof Function ) {
       if ( onBeforeOpen() !== false ) {
         return open = true
       }
@@ -241,7 +247,7 @@
     if ( !open ) return false;
   
     // callback onBeforeClose
-    if ( onBeforeClose ) {
+    if ( onBeforeClose instanceof Function ) {
       if ( onBeforeClose() !== false ) {
         return ! ( open = false );
       }
@@ -259,12 +265,32 @@
   }
   
   function _toggle() {
-    if (open) {
+    if ( open ) {
       _close()
     } else {
       _open()
     }
     return open;
+  }
+  
+  function _focus () {
+    if ( focused ) return false;
+    
+    if ( onFocus instanceof Function) {
+      onFocus()
+    }
+    
+    return ( focused = true )
+  }
+  
+  function _blur () {
+    if ( ! focused ) return false;
+    
+    if ( onBlur instanceof Function ) {
+      onBlur()
+    }
+    
+    return ! ( focused = false )
   }
   
   function _clearByIndex(index) {
@@ -304,14 +330,6 @@
    * Accessible methods
    */
   
-  interface Methods {
-    open: () => boolean;
-    close: () => boolean;
-    toggle: () => boolean;
-    clear: () => boolean;
-  }
-  
-  export const methods = <Methods>{}
 
   export function __open () {
     return _open()
@@ -325,10 +343,29 @@
     return _toggle()
   }
   
+  export function __focus () {
+    return _focus()
+  }
   
-  methods.open = __open
-  methods.close = __close
-  methods.toggle = __toggle
+  export function __blur () {
+    return _blur()
+  }
+
+  interface Methods {
+    focus: () => boolean;
+    blur: () => boolean;
+    toggle: () => boolean;
+    close: () => boolean;
+    open: () => boolean
+  }
+
+  export const methods: Methods = {
+    open: __open,
+    close: __close,
+    toggle: __toggle,
+    focus: __focus,
+    blur: __blur
+  }
   
   /**
    * Lifecycle
@@ -336,15 +373,94 @@
   
   onMount(() => {
     setDefaultValues();
-    document.addEventListener('click', (e: MouseEvent) => {
-      const closest = (e.target as HTMLElement).closest('.v2select');
-      const condition = e.target === elemRoot || (closest && closest === elemRoot);
-      if (!condition) {
-        e.preventDefault();
-        _close();
-      }
-    })
+    DOMEventListeners();
   })
+
+  onDestroy(() => {
+    DOMRemoveListeners();
+  })
+
+  /**
+   * EventListeners
+   */
+
+
+  /**
+   * close on outside click
+   */
+  function cbOutsideClick ( e: MouseEvent ): void {
+    const closest = (e.target as HTMLElement).closest('.v2select');
+    const condition = e.target === elemRoot || (closest && closest === elemRoot);
+    if (!condition) {
+      e.preventDefault();
+      _close();
+    }
+  }
+
+  /**
+   * onFocus / mouseenter
+   * @mouseevent
+   */
+  function cbMouseenter ( e: MouseEvent ) {
+    _focus()
+  }
+  
+  /**
+   * onBlur / mouseleave
+   * @mouseevent
+   */
+  function cbMouseleave ( e: MouseEvent ) {
+    _blur()
+  }
+
+  /**
+   * Event listeners
+   * @constructor
+   */
+  function DOMEventListeners () {
+    document.addEventListener('click', cbOutsideClick)
+    elemControl.addEventListener('mouseenter', cbMouseenter)
+    elemControl.addEventListener('mouseleave', cbMouseleave)
+  }
+
+  /**
+   * Remove Event Listeners
+   * @constructor
+   */
+  function DOMRemoveListeners() {
+    document.removeEventListener('click', cbOutsideClick)
+    elemControl.removeEventListener('mouseenter', cbMouseenter)
+    elemControl.removeEventListener('mouseleave', cbMouseleave)
+  }
+  
+  /*
+   * Transitions
+   */
+  
+  const buttonIn = {
+    duration: 350,
+    delay: 50
+  }
+  
+  const buttonOut = {
+    duration: 150
+  }
+
+  /**
+   * Computed
+   */
+
+  $: clearButton = (
+    focused &&
+    _options.clearable &&
+    (
+      multiple &&
+      values.length ||
+      !multiple &&
+      !!value
+    )
+  )
+  
 
 </script>
 
@@ -357,9 +473,11 @@
   _options.classes.container
 )}>
   <div
+    bind:this={elemControl}
     class={clsx(
       'v2select__controls',
       { 'v2select__controls--is-selected': open },
+      { 'v2select__controls--is-focused': focused },
       _options.classes.controls
     )}
   >
@@ -434,22 +552,15 @@
       {/if}
     </div>
     <div class="v2select__buttons">
-      {#if multiple}
-        {#if values.length && _options.clearable}
-          <button on:click|preventDefault={_clearValues} class="v2select__btn">
+        {#if clearButton }
+          <button in:fade={buttonIn} out:fade={buttonOut} on:click|preventDefault={_clearValues} class="v2select__btn v2select__btn--close">
             <Times/>
           </button>
-        {/if}
-      {:else}
-        {#if !!value && _options.clearable}
-          <button on:click|preventDefault={_clearValues} class="v2select__btn">
-            <Times/>
+        {:else }
+          <button in:fade={buttonIn} out:fade={buttonOut} on:click|stopPropagation|capture|preventDefault={_toggle} class="v2select__btn v2select__btn--arrow">
+            <ChevronDown />
           </button>
         {/if}
-      {/if}
-      <button on:click|stopPropagation|capture|preventDefault={_toggle} class="v2select__btn">
-        <ChevronDown />
-      </button>
     </div>
   </div>
   {#if open}
