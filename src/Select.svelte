@@ -127,6 +127,7 @@
   // refs
   let elemRoot: HTMLDivElement;
   let elemControl: HTMLDivElement;
+  let dropdownElem: HTMLUListElement;
   let elemSearch;
 
 
@@ -490,6 +491,12 @@
   function cbMouseleave ( e: MouseEvent ) {
     _blur()
   }
+  
+  function cbKeyDown ( e: KeyboardEvent ) {
+    console.log(e.key)
+    
+    
+  }
 
   /**
    * Event listeners
@@ -499,6 +506,7 @@
     document.addEventListener('click', cbOutsideClick)
     elemControl.addEventListener('mouseenter', cbMouseenter)
     elemControl.addEventListener('mouseleave', cbMouseleave)
+    elemRoot.addEventListener("keydown", cbKeyDown)
   }
 
   /**
@@ -509,6 +517,7 @@
     document.removeEventListener('click', cbOutsideClick)
     elemControl.removeEventListener('mouseenter', cbMouseenter)
     elemControl.removeEventListener('mouseleave', cbMouseleave)
+    elemRoot.removeEventListener("keydown", cbKeyDown);
   }
 
   /*
@@ -535,24 +544,22 @@
 
 </script>
 
-<div tabindex="0" bind:this={elemRoot} class={clsx(
-  'v2select',
-  {
+<div tabindex="0" bind:this={elemRoot} class={clsx({
+    'v2select': true,
     v2select__multiple: multiple,
-    v2select__single: !multiple
-  },
-  _options.classes.container
-)}>
+    v2select__single: !multiple,
+    [_options.classes.container]: !!_options.classes.container
+})}>
   <div
     bind:this={elemControl}
-    class={clsx(
-      'v2select__controls',
-      { 'v2select__controls--is-selected': open },
-      { 'v2select__controls--is-focused': focused },
-      _options.classes.controls
-    )}
+    class={clsx({
+      'v2select__controls': true,
+      'v2select__controls--is-selected': open,
+      'v2select__controls--is-focused': focused,
+      [_options.classes.controls]: !!_options.classes.controls
+    })}
   >
-    <div on:click={_handleOnClickValue} class="v2select__values">
+    <div role="button" aria-haspopup="listbox" aria-expanded={open} on:click={_handleOnClickValue} class="v2select__values">
       {#if multiple}
         {#if Array.isArray(values) && values.length}
           <div class="v2select__multi-values">
@@ -622,9 +629,10 @@
         {/if}
       {/if}
     </div>
-    <div class="v2select__buttons">
+    <div aria-hidden="true" class="v2select__buttons">
         {#if clearButton }
           <button
+            tabindex="-1"
             in:scale={{ duration: 150 }}
             out:fly
             on:click|preventDefault={_clearValues}
@@ -634,6 +642,7 @@
           </button>
         {:else }
           <button
+            tabindex="-1"
             in:scale={{ duration: 150 }}
             out:fly
             on:click|stopPropagation|capture|preventDefault={_toggle}
@@ -649,19 +658,19 @@
       "v2select__dropdown",
       _options.classes.dropdownRoot
     )}>
-      <div class="v2select__dropdown-inner">
+      <ul bind:this={dropdownElem} tabindex="0" role="listbox" class="v2select__dropdown-inner">
         {#if Array.isArray(filteredOptions) && filteredOptions.length}
           {#each filteredOptions as option}
-            <button
-              class={clsx(
-                'v2select__dropdown-item',
-                {
+            <li
+              aria-selected={option.value === value && !multiple}
+              role="option"
+              aria-disabled={option.disabled}
+              class={clsx({
+                  [_options.classes.dropdown]: !!_options.classes.dropdown,
+                  'v2select__dropdown-item': true,
                   'v2select__dropdown--selected': option.value === value && !multiple,
                   'v2select__dropdown--is-disabled': option.disabled === true
-                },
-                _options.classes.dropdown
-              )}
-              tabindex={option.disabled ? '-1' : '0'}
+              })}
               on:click|preventDefault={
                 () => option.disabled ? null : _select(option.value)
               }
@@ -671,12 +680,12 @@
               {:else }
                 {option.text}
               {/if}
-            </button>
+            </li>
           {/each}
         {:else}
           <span class="v2select__dropdown-placeholder">{_options.noResultsText}</span>
         {/if}
-      </div>
+      </ul>
     </div>
   {/if}
 </div>
