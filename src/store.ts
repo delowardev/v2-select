@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store';
-import type { SelectOption, StoreDaddy } from "./interface";
+import type { OptionBase, StoreDaddy } from "./interface";
 
 export function createStore(): StoreDaddy {
   
@@ -14,14 +14,14 @@ export function createStore(): StoreDaddy {
    */
 
   
-  function addOption(_opt: SelectOption) {
+  function addOption(_opt: OptionBase) {
     const opt = get(options).slice();
     opt.push(_opt);
     options.update(() => opt);
     
   }
 
-  function addOptions(_opt: SelectOption[], clean: false) {
+  function addOptions(_opt: OptionBase[], clean: false) {
     const opt = clean ? [] : get(options).slice();
     opt.push(..._opt);
     options.update(() => opt);

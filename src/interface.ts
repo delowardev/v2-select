@@ -1,7 +1,8 @@
-export interface SelectOption {
+export interface OptionBase {
   text: string;
   value: string;
   disabled?: boolean;
+  dataset?: DOMStringMap
 }
 
 export interface StoreDaddy {

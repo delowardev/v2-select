@@ -1,13 +1,14 @@
 <script lang="ts">
   import clsx from "clsx";
-  import { onDestroy,onMount } from "svelte";
-  import { fly,scale } from "svelte/transition";
+  import {onDestroy, onMount} from "svelte";
+  import {fly, scale} from "svelte/transition";
   import ChevronDown from "./components/icons/ChevronDown.svelte";
   import Times from "./components/icons/Times.svelte";
-  import { findText } from "./helper";
-  import type { SelectOption } from "./interface";
+  import {findText, findMyOption} from "./helper";
+  import type { OptionBase } from "./interface";
   import Search from "./Search.svelte";
-  import { createStore } from "./store";
+  import {createStore} from "./store";
+  import A11yText from "./A11yText.svelte";
 
   /**
    * Constant
@@ -22,14 +23,14 @@
     clearValues,
     setSearch,
     backspace,
-
+  
     search: stateSearch,
     value: stateValue,
     values: stateValues,
     options: stateOptions
   } = createStore();
 
-  interface SelectOptions {
+  interface OptionBases {
     classes?: {
       container?: string;
       controls?: string
@@ -40,8 +41,8 @@
     placeholder?: string;
     search?: boolean;
     noResultsText?: string;
-    renderOption: (string) => string | null;
-    renderValue: (string) => string | null;
+    renderOption: (string, dataset: DOMStringMap) => string | null;
+    renderValue: (string, dataset: DOMStringMap) => string | null;
     clearable: boolean;
     callback: any;
   }
@@ -63,7 +64,7 @@
   }
 
   // Default options
-  const defaultOptions: SelectOptions = {
+  const defaultOptions: OptionBases = {
     classes: {
       container: "",
       controls: "",
@@ -100,12 +101,11 @@
    */
 
   export let select: HTMLSelectElement;
-  export let selectOptions: SelectOptions;
+  export let selectOptions: OptionBases;
 
   selectOptions.classes = Object.assign({}, defaultOptions.classes, selectOptions.classes);
-  selectOptions.callback = <Callback> Object.assign({}, defaultOptions.callback, selectOptions.callback);
-  const _options = <SelectOptions> Object.assign({}, defaultOptions, selectOptions);
-
+  selectOptions.callback = <Callback>Object.assign({}, defaultOptions.callback, selectOptions.callback);
+  const _options = <OptionBases>Object.assign({}, defaultOptions, selectOptions);
 
 
   // ... //
@@ -158,7 +158,7 @@
   // default value
 
   function setDefaultValues() {
-    addOptions(getInitialSelectOptions(), true);
+    addOptions(getInitialOptions(), true);
     if (multiple) {
       setValues(getInitialValues());
     } else {
@@ -181,8 +181,10 @@
     return select.selectedOptions;
   }
 
-  function getInitialSelectOptions(): SelectOption[] {
-    return Array.from(select.options).map(({value, text, disabled}) => ({value, text, disabled}));
+  function getInitialOptions(): OptionBase[] {
+    return Array.from(select.options).map(
+      ({value, text, disabled, dataset}) => ({value, text, disabled, dataset})
+    )
   }
 
   function getInitialValues(): String[] {
@@ -192,9 +194,9 @@
   function updateMultiSelectElem() {
     setTimeout(() => {
       if (multiple) {
-          Array.from(select.options).forEach(option => {
-            option.selected = values.includes(option.value);
-          });
+        Array.from(select.options).forEach(option => {
+          option.selected = values.includes(option.value);
+        });
       } else {
         select.value = value;
       }
@@ -220,7 +222,7 @@
    */
 
   function _select(value) {
-
+  
     // callback onBeforeChange
     if (
       onBeforeChange instanceof Function &&
@@ -228,26 +230,26 @@
     ) {
       return false
     }
-
+  
     setSearch("");
-
+  
     if (multiple) {
       appendValue(value);
     } else {
       setValue(value);
     }
-
+  
     // callback onChange
-    if ( onChange instanceof Function ) {
+    if (onChange instanceof Function) {
       onChange()
     }
-
-    if ( ! multiple ) {
+  
+    if (!multiple) {
       _close();
     }
-
+  
     return true
-
+  
   }
 
 
@@ -255,23 +257,23 @@
    * Open Dropdown
    */
   function _open() {
-    if ( open ) return false
-
+    if (open) return false
+  
     // callback onBeforeOpen
-    if ( onBeforeOpen instanceof Function ) {
-      if ( onBeforeOpen() !== false ) {
+    if (onBeforeOpen instanceof Function) {
+      if (onBeforeOpen() !== false) {
         return open = true
       }
       return false
     }
-
+  
     open = true
-
+  
     // callback onOpen
     if (onOpen) {
       onOpen()
     }
-
+  
     return true
   }
 
@@ -279,23 +281,23 @@
    * Close dropdown
    */
   function _close() {
-    if ( !open ) return false;
-
+    if (!open) return false;
+  
     // callback onBeforeClose
-    if ( onBeforeClose instanceof Function ) {
-      if ( onBeforeClose() !== false ) {
-        return ! ( open = false );
+    if (onBeforeClose instanceof Function) {
+      if (onBeforeClose() !== false) {
+        return !(open = false);
       }
       return false;
     }
-
+  
     open = false
-
+  
     // callback onClose
-    if ( onClose ) {
+    if (onClose) {
       onClose()
     }
-
+  
     return true
   }
 
@@ -303,7 +305,7 @@
    * Toggle dropdown
    */
   function _toggle() {
-    if ( open ) {
+    if (open) {
       _close()
     } else {
       _open()
@@ -314,29 +316,29 @@
   /**
    * Focus select
    */
-  function _focus () {
-    if ( focused ) return false;
+  function _focus() {
+    if (focused) return false;
   
     // callback onFocus
-    if ( onFocus instanceof Function) {
+    if (onFocus instanceof Function) {
       onFocus()
     }
-
-    return ( focused = true )
+  
+    return (focused = true)
   }
 
   /**
    * Blur select
    */
-  function _blur () {
-    if ( ! focused ) return false;
+  function _blur() {
+    if (!focused) return false;
   
     // callback onBlur
-    if ( onBlur instanceof Function ) {
+    if (onBlur instanceof Function) {
       onBlur()
     }
-
-    return ! ( focused = false )
+  
+    return !(focused = false)
   }
 
   function _clearByIndex(index) {
@@ -355,15 +357,15 @@
     }
   }
 
-  function _search ( value: string ) {
-    return setSearch( value )
+  function _search(value: string) {
+    return setSearch(value)
   }
 
   /**
    * Custom events func
    */
 
-  function _setSearch (e) {
+  function _setSearch(e) {
     _search(e.detail.value);
     if (value) {
       _open()
@@ -379,44 +381,44 @@
    */
 
 
-  export function __open () {
+  export function __open() {
     return _open()
   }
 
-  export function __close () {
+  export function __close() {
     return _close()
   }
 
-  export function __toggle () {
+  export function __toggle() {
     return _toggle()
   }
 
-  export function __focus () {
+  export function __focus() {
     return _focus()
   }
 
-  export function __blur () {
+  export function __blur() {
     return _blur()
   }
 
-  export function __select ( value: string ) {
-    return _select( value )
+  export function __select(value: string) {
+    return _select(value)
   }
   
-  export function __clearByIndex ( index: number ) {
-    return _clearByIndex( index )
+  export function __clearByIndex(index: number) {
+    return _clearByIndex(index)
   }
   
-  export function __clear ( ) {
+  export function __clear() {
     return _clearValues()
   }
   
-  export function __search ( value: string ) {
-    return _search( value )
+  export function __search(value: string) {
+    return _search(value)
   }
   
-  export function __clearSearch () {
-    return _search( "" )
+  export function __clearSearch() {
+    return _search("")
   }
 
   interface Methods {
@@ -425,10 +427,10 @@
     toggle: () => boolean;
     close: () => boolean;
     open: () => boolean;
-    select: ( value: string ) => boolean;
-    clearByIndex: ( index: number ) => boolean;
+    select: (value: string) => boolean;
+    clearByIndex: (index: number) => boolean;
     clear: () => void;
-    search: ( value: string ) => void;
+    search: (value: string) => void;
     clearSearch: () => void;
   }
 
@@ -467,7 +469,7 @@
   /**
    * close on outside click
    */
-  function cbOutsideClick ( e: MouseEvent ): void {
+  function cbOutsideClick(e: MouseEvent): void {
     const closest = (e.target as HTMLElement).closest('.v2select');
     const condition = e.target === elemRoot || (closest && closest === elemRoot);
     if (!condition) {
@@ -480,7 +482,7 @@
    * onFocus / mouseenter
    * @mouseevent
    */
-  function cbMouseenter ( e: MouseEvent ) {
+  function cbMouseenter(e: MouseEvent) {
     _focus()
   }
 
@@ -488,11 +490,11 @@
    * onBlur / mouseleave
    * @mouseevent
    */
-  function cbMouseleave ( e: MouseEvent ) {
+  function cbMouseleave(e: MouseEvent) {
     _blur()
   }
   
-  function cbKeyDown ( e: KeyboardEvent ) {
+  function cbKeyDown(e: KeyboardEvent) {
     console.log(e.key)
     
     
@@ -502,7 +504,7 @@
    * Event listeners
    * @constructor
    */
-  function DOMEventListeners () {
+  function DOMEventListeners() {
     document.addEventListener('click', cbOutsideClick)
     elemControl.addEventListener('mouseenter', cbMouseenter)
     elemControl.addEventListener('mouseleave', cbMouseleave)
@@ -550,6 +552,11 @@
     v2select__single: !multiple,
     [_options.classes.container]: !!_options.classes.container
 })}>
+  
+  <A11yText>
+    Hello
+  </A11yText>
+  
   <div
     bind:this={elemControl}
     class={clsx({
@@ -567,7 +574,10 @@
               <div class="v2select__multi-value" in:fly>
                 <span class="v2select__multi-label">
                   {#if (_options.renderValue)}
-                    {@html _options.renderValue(findText(options, val)) || findText(options, val)}
+                    {@html _options.renderValue(
+                      findMyOption(options, val)?.text || "",
+                      findMyOption(options, val)?.dataset || []
+                    )}
                   {:else}
                     { findText(options, val) }
                   {/if}
@@ -676,7 +686,7 @@
               }
             >
               {#if (_options.renderOption)}
-                {@html _options.renderOption(option.text) || option.text}
+                {@html _options.renderOption(option.text, option.dataset) || option.text}
               {:else }
                 {option.text}
               {/if}
