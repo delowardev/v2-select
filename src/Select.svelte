@@ -5,10 +5,12 @@
   import ChevronDown from "./components/icons/ChevronDown.svelte";
   import Times from "./components/icons/Times.svelte";
   import {findText, findMyOption} from "./helper";
-  import type { OptionBase } from "./interface";
+  import type { Callback, OptionProps, Options } from "./interface";
   import Search from "./Search.svelte";
   import {createStore} from "./store";
   import A11yText from "./A11yText.svelte";
+  import { ariaLiveMessage } from "./accessibility"
+  import type { GuidanceProps } from "./accessibility"
 
   /**
    * Constant
@@ -30,41 +32,10 @@
     options: stateOptions
   } = createStore();
 
-  interface OptionBases {
-    classes?: {
-      container?: string;
-      controls?: string
-      dropdownRoot?: string
-      dropdown?: string
-      placeholder?: string
-    },
-    placeholder?: string;
-    search?: boolean;
-    noResultsText?: string;
-    renderOption: (string, dataset: DOMStringMap) => string | null;
-    renderValue: (string, dataset: DOMStringMap) => string | null;
-    clearable: boolean;
-    callback: any;
-  }
-
-  interface Callback {
-    onBeforeOpen: (() => boolean) | null;
-    onOpen: (() => void) | null;
-    onBeforeClose: (() => boolean) | null;
-    onClose: (() => void) | null;
-    onBeforeChange: (() => boolean) | null;
-    onChange: (() => void) | null;
-    onFocus: (() => void) | null;
-    onBlur: (() => void) | null;
-    onKeyDown: (() => void) | null;
-    onKeyUp: (() => void) | null;
-    onKeyPress: (() => void) | null;
-    onMenuScrollTop: (() => void) | null;
-    onMenuScrollEnd: (() => void) | null;
-  }
+  
 
   // Default options
-  const defaultOptions: OptionBases = {
+  const defaultOptions: OptionProps = {
     classes: {
       container: "",
       controls: "",
@@ -101,11 +72,11 @@
    */
 
   export let select: HTMLSelectElement;
-  export let selectOptions: OptionBases;
+  export let selectOptions: OptionProps;
 
   selectOptions.classes = Object.assign({}, defaultOptions.classes, selectOptions.classes);
   selectOptions.callback = <Callback>Object.assign({}, defaultOptions.callback, selectOptions.callback);
-  const _options = <OptionBases>Object.assign({}, defaultOptions, selectOptions);
+  const _options = <OptionProps>Object.assign({}, defaultOptions, selectOptions);
 
 
   // ... //
@@ -115,6 +86,7 @@
    * Variables
    */
 
+  const multiple = select.multiple;
   let open = false;
   let focused = false;
   let value = "";
@@ -123,7 +95,8 @@
   let values = [];
   let filteredOptions = [];
   let searchText = "";
-  const multiple = select.multiple;
+  let ariaSelected = "";
+  let ariaContext = "";
   // refs
   let elemRoot: HTMLDivElement;
   let elemControl: HTMLDivElement;
@@ -181,7 +154,7 @@
     return select.selectedOptions;
   }
 
-  function getInitialOptions(): OptionBase[] {
+  function getInitialOptions(): Options {
     return Array.from(select.options).map(
       ({value, text, disabled, dataset}) => ({value, text, disabled, dataset})
     )
@@ -222,6 +195,7 @@
    */
 
   function _select(value) {
+    
   
     // callback onBeforeChange
     if (
@@ -317,14 +291,30 @@
    * Focus select
    */
   function _focus() {
+    
     if (focused) return false;
+    
+    const { guidance } = ariaLiveMessage
   
     // callback onFocus
     if (onFocus instanceof Function) {
       onFocus()
     }
   
-    return (focused = true)
+    focused = true;
+    
+    const props = <GuidanceProps> {
+      label: "",
+      disabled: false,
+      context: "root",
+      searchable: _options.search,
+      multiple,
+      selected: true
+    }
+    
+    ariaSelected = guidance(props);
+  
+    return true
   }
 
   /**
@@ -532,6 +522,7 @@
    * Computed
    */
 
+  let clearButton;
   $: clearButton = (
     focused &&
     _options.clearable &&
@@ -554,7 +545,8 @@
 })}>
   
   <A11yText>
-    Hello
+    <span class="v2select__aria-selected">{ariaSelected}</span>
+    <span class="v2select__aria-context">{ariaContext}</span>
   </A11yText>
   
   <div
