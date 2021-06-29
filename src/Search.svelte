@@ -44,7 +44,6 @@
 <div class="v2select__search">
   <span
     aria-hidden="true"
-    tabindex="-1"
     on:focus={bindEvents}
     on:blur={unbindEvents}
     on:input={_search}

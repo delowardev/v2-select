@@ -481,11 +481,22 @@
    * @mouseevent
    */
   function cbMouseleave(e: MouseEvent) {
-    _blur()
+    if (e.target !== document.activeElement) _blur()
   }
   
   function cbKeyDown(e: KeyboardEvent) {
-    console.log(e.key)
+    console.log(e.code)
+    const target = e.target as HTMLButtonElement;
+    
+    if (e.code === "Space" || e.code === "Enter") {
+      e.preventDefault()
+      if (document.activeElement !== e.target) target.focus()
+      _toggle()
+    }
+    
+    if (e.code === "Escape") {
+      _close()
+    }
     
     
   }
@@ -496,9 +507,16 @@
    */
   function DOMEventListeners() {
     document.addEventListener('click', cbOutsideClick)
+    
+    // focus
     elemControl.addEventListener('mouseenter', cbMouseenter)
+    elemControl.addEventListener('focus', _focus)
+    
+    // blur
     elemControl.addEventListener('mouseleave', cbMouseleave)
-    elemRoot.addEventListener("keydown", cbKeyDown)
+    elemControl.addEventListener('blur', _blur)
+  
+    elemControl.addEventListener("keydown", cbKeyDown)
   }
 
   /**
@@ -507,9 +525,16 @@
    */
   function DOMRemoveListeners() {
     document.removeEventListener('click', cbOutsideClick)
+    
+    // focus
     elemControl.removeEventListener('mouseenter', cbMouseenter)
+    elemControl.removeEventListener('focus', _focus)
+    
+    // blur
     elemControl.removeEventListener('mouseleave', cbMouseleave)
-    elemRoot.removeEventListener("keydown", cbKeyDown);
+    elemControl.removeEventListener('blur', _blur)
+    
+    elemControl.removeEventListener("keydown", cbKeyDown);
   }
 
   /*
@@ -537,7 +562,7 @@
 
 </script>
 
-<div tabindex="0" bind:this={elemRoot} class={clsx({
+<div bind:this={elemRoot} class={clsx({
     'v2select': true,
     v2select__multiple: multiple,
     v2select__single: !multiple,
@@ -550,6 +575,11 @@
   </A11yText>
   
   <div
+    role="button"
+    aria-haspopup="listbox"
+    aria-expanded={open}
+    on:click={_handleOnClickValue}
+    tabindex="0"
     bind:this={elemControl}
     class={clsx({
       'v2select__controls': true,
@@ -558,7 +588,7 @@
       [_options.classes.controls]: !!_options.classes.controls
     })}
   >
-    <div role="button" aria-haspopup="listbox" aria-expanded={open} on:click={_handleOnClickValue} class="v2select__values">
+    <div class="v2select__values">
       {#if multiple}
         {#if Array.isArray(values) && values.length}
           <div class="v2select__multi-values">
