@@ -1,3 +1,5 @@
+<svelte:options accessors={true} />
+
 <script lang="ts">
   import clsx from "clsx";
   import {onDestroy, onMount} from "svelte";
@@ -106,6 +108,15 @@
   let elemControl: HTMLDivElement;
   let dropdownElem: HTMLUListElement;
   let elemSearch;
+  
+  // custom events
+  const EVENT_OPEN = new Event("open")
+  const EVENT_CLOSE = new Event("close")
+  const EVENT_CHANGE = new Event("change")
+  const EVENT_FOCUS = new Event("focus")
+  const EVENT_BLUR = new Event("blur")
+  
+  export let Events = document.createElement('span');
 
 
   /**
@@ -391,6 +402,7 @@
   
   function _onSearchFocus() {
     searchFocused = true;
+    _open()
   }
   
   function _onSearchBlur() {
@@ -753,7 +765,13 @@
       "v2select__dropdown",
       _options.classes.dropdownRoot
     )}>
-      <ul on:mouseleave={_dropdownMouseLeave} bind:this={dropdownElem} tabindex="0" role="listbox" class="v2select__dropdown-inner">
+      <ul
+        on:mouseleave={_dropdownMouseLeave}
+        bind:this={dropdownElem}
+        tabindex="-1"
+        role="listbox"
+        class="v2select__dropdown-inner"
+      >
         {#if Array.isArray(filteredOptions) && filteredOptions.length}
           {#each filteredOptions as option}
             <li
