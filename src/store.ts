@@ -7,7 +7,7 @@ export function createStore(): StoreDaddy {
   const value = writable("");
   const values = writable([]);
   const options = writable([]);
-  // const multiple = writable(false);
+  const focusedOption = writable("");
 
   /**
    * Store Mutation/Setter
@@ -34,6 +34,10 @@ export function createStore(): StoreDaddy {
 
   function setValues(v: string[]) {
     values.update(() => v);
+  }
+  
+  function setFocusedOption( v: string ) {
+    value.update(() => v)
   }
 
   // function setMultiple( multi = true) {
@@ -68,7 +72,7 @@ export function createStore(): StoreDaddy {
     value.update(() => "");
   }
 
-  function setSearch(s) {
+  function setSearch(s: string) {
     search.update(() => s);
   }
 
@@ -84,6 +88,7 @@ export function createStore(): StoreDaddy {
     addOption,
     addOptions,
     setValues,
+    setFocusedOption,
     // setMultiple,
     appendValue,
     clearByIndex,
@@ -95,8 +100,8 @@ export function createStore(): StoreDaddy {
     search,
     value,
     values,
-    // multiple,
-    options
+    options,
+    focusedOption
   }
 
 }

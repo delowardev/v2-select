@@ -5,7 +5,7 @@
   import ChevronDown from "./components/icons/ChevronDown.svelte";
   import Times from "./components/icons/Times.svelte";
   import {findText, findMyOption} from "./helper";
-  import type { Callback, OptionProps, Options } from "./interface";
+  import type {BoolFunc, Callback, OptionProps, Options, SingleArgBoolFunc, SingleArgVoidFunc} from "./interface";
   import Search from "./Search.svelte";
   import {createStore} from "./store";
   import A11yText from "./A11yText.svelte";
@@ -126,7 +126,7 @@
     getFilteredOptions();
     updateMultiSelectElem();
   });
-
+  
 
   // default value
 
@@ -335,7 +335,7 @@
     return clearByIndex(index);
   }
 
-  function _clearValues() {
+  function _clearValues(): void {
     clearValues();
     setSearch("");
   }
@@ -350,6 +350,21 @@
   function _search(value: string) {
     return setSearch(value)
   }
+  
+  
+  /**
+   * Dropdown Item Focus
+   */
+
+  function _optionMouseEnter() {
+  
+  }
+  
+  function _optionMouseLeave() {
+  
+  }
+  
+  
 
   /**
    * Custom events func
@@ -412,16 +427,16 @@
   }
 
   interface Methods {
-    focus: () => boolean;
-    blur: () => boolean;
-    toggle: () => boolean;
-    close: () => boolean;
-    open: () => boolean;
-    select: (value: string) => boolean;
-    clearByIndex: (index: number) => boolean;
-    clear: () => void;
-    search: (value: string) => void;
-    clearSearch: () => void;
+    clearSearch: Function;
+    search: SingleArgVoidFunc<string>;
+    select: SingleArgBoolFunc<string>;
+    clearByIndex: SingleArgVoidFunc<number>;
+    clear: Function;
+    focus: BoolFunc;
+    blur: BoolFunc;
+    toggle: BoolFunc;
+    close: BoolFunc;
+    open: BoolFunc;
   }
 
   export const methods: Methods = {
@@ -488,15 +503,33 @@
     console.log(e.code)
     const target = e.target as HTMLButtonElement;
     
+    // focus and toggle menu
     if (e.code === "Space" || e.code === "Enter") {
       e.preventDefault()
-      if (document.activeElement !== e.target) target.focus()
       _toggle()
     }
     
+    // close menu
     if (e.code === "Escape") {
       _close()
     }
+    
+    // clear value
+    if (e.code === "Backspace") {
+      _clearValues()
+    }
+    
+    // up and down
+    if (e.code === "ArrowDown") {
+    
+    }
+    
+    if (e.code === "ArrowUp") {
+    
+    }
+    
+    
+    
     
     
   }
@@ -694,6 +727,8 @@
         {#if Array.isArray(filteredOptions) && filteredOptions.length}
           {#each filteredOptions as option}
             <li
+              onmouseleave="_optionMouseLeave"
+              onmouseenter="_optionMouseEnter"
               aria-selected={option.value === value && !multiple}
               role="option"
               aria-disabled={option.disabled}

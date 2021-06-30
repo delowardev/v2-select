@@ -1,3 +1,5 @@
+import type {Writable} from "svelte/store";
+
 export interface OptionBase {
   text: string;
   value: string;
@@ -12,45 +14,59 @@ export interface GroupBase {
   readonly label?: string;
 }
 
-
 export type OptionsOrGroups = readonly (OptionBase | GroupBase)[];
 
+export interface SingleArgVoidFunc <T> {
+  ( arg: T ): void
+}
+
+export interface SingleArgBoolFunc <T> {
+  ( arg: T ): boolean
+}
+
+export interface BoolFunc {
+  (): boolean;
+}
+
 export interface StoreDaddy {
-  setValue: Function;
-  addOption: Function;
-  addOptions: Function;
-  setValues: Function;
-  // setMultiple: Function;
-  appendValue: Function;
-  clearByIndex: Function;
+  setValue: SingleArgVoidFunc<string>;
+  addOption: SingleArgVoidFunc<OptionBase>;
+  addOptions: ( arg: Options, arg2: boolean ) => void;
+  setValues: SingleArgVoidFunc<string[]>;
+  setFocusedOption:  SingleArgVoidFunc<string>;
+  appendValue:  SingleArgVoidFunc<string>;
+  clearByIndex: SingleArgVoidFunc<number>;
   clearValues: Function;
-  setSearch: Function;
+  setSearch: SingleArgVoidFunc<string>;
   backspace: Function;
   
   // writable
-  search: any;
-  value: any;
-  values: any;
-  options: any;
-  // multiple: any
+  search: Writable<string>;
+  value: Writable<string>;
+  values: Writable<Array<string>>;
+  options: Writable<Options>;
+  focusedOption: Writable<string>
 }
 
 
+export type BoolFuncOrNull = (() => boolean) | null;
+export type VoidFuncOrNull = (() => boolean) | null;
+
 
 export interface Callback {
-  onBeforeOpen: (() => boolean) | null;
-  onOpen: (() => void) | null;
-  onBeforeClose: (() => boolean) | null;
-  onClose: (() => void) | null;
-  onBeforeChange: (() => boolean) | null;
-  onChange: (() => void) | null;
-  onFocus: (() => void) | null;
-  onBlur: (() => void) | null;
-  onKeyDown: (() => void) | null;
-  onKeyUp: (() => void) | null;
-  onKeyPress: (() => void) | null;
-  onMenuScrollTop: (() => void) | null;
-  onMenuScrollEnd: (() => void) | null;
+  onBeforeOpen: BoolFuncOrNull;
+  onOpen: VoidFuncOrNull;
+  onBeforeClose: BoolFuncOrNull;
+  onClose: VoidFuncOrNull;
+  onBeforeChange: BoolFuncOrNull;
+  onChange: VoidFuncOrNull;
+  onFocus: VoidFuncOrNull;
+  onBlur: VoidFuncOrNull;
+  onKeyDown: VoidFuncOrNull;
+  onKeyUp: VoidFuncOrNull;
+  onKeyPress: VoidFuncOrNull;
+  onMenuScrollTop: VoidFuncOrNull;
+  onMenuScrollEnd: VoidFuncOrNull;
 }
 
 export interface OptionProps {
