@@ -17,7 +17,7 @@
   }
   
   function _search(e) {
-    dispatch('update', {
+    dispatch("update", {
       value: e.target.textContent
     });
   }
@@ -25,17 +25,17 @@
   function onDelete(e) {
     let char = (typeof e !== 'undefined') ? e.keyCode : e.which
     if (char === 8 && !search) {
-      dispatch('backspace');
+      dispatch("backspace");
     }
   }
   
   function bindEvents () {
-    console.log('bind');
+    dispatch("focus")
     elem.addEventListener("keydown", onDelete);
   }
   
   function unbindEvents () {
-    console.log('unbind');
+    dispatch("blur")
     elem.removeEventListener("keydown", onDelete);
   }
 

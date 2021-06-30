@@ -37,7 +37,7 @@ export function createStore(): StoreDaddy {
   }
   
   function setFocusedOption( v: string ) {
-    value.update(() => v)
+    focusedOption.update(() => v)
   }
 
   // function setMultiple( multi = true) {

@@ -25,11 +25,13 @@
     clearValues,
     setSearch,
     backspace,
+    setFocusedOption,
   
     search: stateSearch,
     value: stateValue,
     values: stateValues,
-    options: stateOptions
+    options: stateOptions,
+    focusedOption: stateFocusedOption
   } = createStore();
 
   
@@ -97,6 +99,8 @@
   let searchText = "";
   let ariaSelected = "";
   let ariaContext = "";
+  let focusedOption = "";
+  let searchFocused = false;
   // refs
   let elemRoot: HTMLDivElement;
   let elemControl: HTMLDivElement;
@@ -125,6 +129,10 @@
     values = v;
     getFilteredOptions();
     updateMultiSelectElem();
+  });
+  
+  stateFocusedOption.subscribe(v => {
+    focusedOption = v;
   });
   
 
@@ -356,12 +364,12 @@
    * Dropdown Item Focus
    */
 
-  function _optionMouseEnter() {
-  
+  function _optionMouseEnter(e) {
+    setFocusedOption(e.target?.dataset?.value || "")
   }
   
-  function _optionMouseLeave() {
-  
+  function _dropdownMouseLeave() {
+    setFocusedOption("")
   }
   
   
@@ -379,6 +387,14 @@
 
   function _backspace() {
     backspace();
+  }
+  
+  function _onSearchFocus() {
+    searchFocused = true;
+  }
+  
+  function _onSearchBlur() {
+    searchFocused = false;
   }
 
   /**
@@ -459,7 +475,6 @@
   onMount(() => {
     setDefaultValues();
     DOMEventListeners();
-    console.log(elemSearch)
   })
 
   onDestroy(() => {
@@ -502,11 +517,19 @@
   function cbKeyDown(e: KeyboardEvent) {
     console.log(e.code)
     const target = e.target as HTMLButtonElement;
+    const isSearch = target?.classList?.contains('v2select__search-skeleton');
     
     // focus and toggle menu
-    if (e.code === "Space" || e.code === "Enter") {
+    if (e.code === "Enter") {
       e.preventDefault()
       _toggle()
+    }
+    
+    if (e.code === "Space") {
+      if (!isSearch) {
+        e.preventDefault();
+      }
+      _open()
     }
     
     // close menu
@@ -515,7 +538,7 @@
     }
     
     // clear value
-    if (e.code === "Backspace") {
+    if (e.code === "Backspace" && !isSearch) {
       _clearValues()
     }
     
@@ -617,7 +640,7 @@
     class={clsx({
       'v2select__controls': true,
       'v2select__controls--is-selected': open,
-      'v2select__controls--is-focused': focused,
+      'v2select__controls--is-focused': focused || searchFocused,
       [_options.classes.controls]: !!_options.classes.controls
     })}
   >
@@ -626,7 +649,7 @@
         {#if Array.isArray(values) && values.length}
           <div class="v2select__multi-values">
             {#each values as val, i}
-              <div class="v2select__multi-value" in:fly>
+              <div tabindex="0" role="button" class="v2select__multi-value" in:fly>
                 <span class="v2select__multi-label">
                   {#if (_options.renderValue)}
                     {@html _options.renderValue(
@@ -638,6 +661,7 @@
                   {/if}
                 </span>
                 <button
+                  tabindex="-1"
                   on:click|stopPropagation|capture|preventDefault={_clearByIndex.bind(this, i)}
                   class="v2select__multi-close"
                 >
@@ -652,6 +676,8 @@
                 bind:search={searchText}
                 on:update={_setSearch}
                 on:backspace={_backspace}
+                on:focus={_onSearchFocus}
+                on:blur={_onSearchBlur}
               />
             {/if}
           </div>
@@ -663,6 +689,8 @@
               bind:search={searchText}
               on:update={_setSearch}
               on:backspace={_backspace}
+              on:focus={_onSearchFocus}
+              on:blur={_onSearchBlur}
             />
           {/if}
           {#if !searchText}
@@ -677,6 +705,8 @@
             bind:search={searchText}
             on:update={_setSearch}
             on:backspace={_backspace}
+            on:focus={_onSearchFocus}
+            on:blur={_onSearchBlur}
           />
         {/if}
         {#if !searchText}
@@ -723,12 +753,12 @@
       "v2select__dropdown",
       _options.classes.dropdownRoot
     )}>
-      <ul bind:this={dropdownElem} tabindex="0" role="listbox" class="v2select__dropdown-inner">
+      <ul on:mouseleave={_dropdownMouseLeave} bind:this={dropdownElem} tabindex="0" role="listbox" class="v2select__dropdown-inner">
         {#if Array.isArray(filteredOptions) && filteredOptions.length}
           {#each filteredOptions as option}
             <li
-              onmouseleave="_optionMouseLeave"
-              onmouseenter="_optionMouseEnter"
+              data-value={option.value}
+              on:mouseenter={_optionMouseEnter}
               aria-selected={option.value === value && !multiple}
               role="option"
               aria-disabled={option.disabled}
@@ -736,7 +766,8 @@
                   [_options.classes.dropdown]: !!_options.classes.dropdown,
                   'v2select__dropdown-item': true,
                   'v2select__dropdown--selected': option.value === value && !multiple,
-                  'v2select__dropdown--is-disabled': option.disabled === true
+                  'v2select__dropdown--is-disabled': option.disabled === true,
+                  'v2select__dropdown--is-focused': focusedOption === option.value
               })}
               on:click|preventDefault={
                 () => option.disabled ? null : _select(option.value)
