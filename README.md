@@ -81,7 +81,8 @@ options.callback = {
   onMenuScrollEnd: null //*
 }
 
-// Note: on `onBeforeOpen`, `onBeforeClose`, and `onBeforeChange` you can return false to prevent next action.
+// Note: on `onBeforeOpen`, `onBeforeClose`, and `onBeforeChange` 
+// it is possible to return false to prevent next action.
 
 // Example:
 
