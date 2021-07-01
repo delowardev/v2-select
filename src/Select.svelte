@@ -115,9 +115,7 @@
   const EVENT_CHANGE = new Event("change")
   const EVENT_FOCUS = new Event("focus")
   const EVENT_BLUR = new Event("blur")
-  
-  export let Events = document.createElement('span');
-
+  export const Events: HTMLElement = document.createElement('span')
 
   /**
    * Store Subscribers
@@ -219,7 +217,7 @@
     // callback onBeforeChange
     if (
       onBeforeChange instanceof Function &&
-      onBeforeChange() === false
+      onBeforeChange(value) === false
     ) {
       return false
     }
@@ -231,6 +229,8 @@
     } else {
       setValue(value);
     }
+    
+    Events.dispatchEvent(EVENT_CHANGE)
   
     // callback onChange
     if (onChange instanceof Function) {
@@ -254,13 +254,16 @@
   
     // callback onBeforeOpen
     if (onBeforeOpen instanceof Function) {
-      if (onBeforeOpen() !== false) {
+      const val = multiple ? values : value;
+      if (onBeforeOpen(val) !== false) {
         return open = true
       }
       return false
     }
   
     open = true
+  
+    Events.dispatchEvent(EVENT_OPEN);
   
     // callback onOpen
     if (onOpen) {
@@ -278,13 +281,16 @@
   
     // callback onBeforeClose
     if (onBeforeClose instanceof Function) {
-      if (onBeforeClose() !== false) {
+      const val = multiple ? values : value;
+      if (onBeforeClose(val) !== false) {
         return !(open = false);
       }
       return false;
     }
   
     open = false
+  
+    Events.dispatchEvent(EVENT_CLOSE);
   
     // callback onClose
     if (onClose) {
@@ -315,12 +321,14 @@
     
     const { guidance } = ariaLiveMessage
   
+    focused = true;
+  
     // callback onFocus
     if (onFocus instanceof Function) {
       onFocus()
     }
   
-    focused = true;
+    Events.dispatchEvent(EVENT_FOCUS);
     
     const props = <GuidanceProps> {
       label: "",
@@ -342,12 +350,16 @@
   function _blur() {
     if (!focused) return false;
   
+    focused = false;
+    
     // callback onBlur
     if (onBlur instanceof Function) {
       onBlur()
     }
   
-    return !(focused = false)
+    Events.dispatchEvent(EVENT_BLUR);
+  
+    return false
   }
 
   function _clearByIndex(index) {

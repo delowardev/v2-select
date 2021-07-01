@@ -50,15 +50,16 @@ export interface StoreDaddy {
 
 
 export type BoolFuncOrNull = (() => boolean) | null;
-export type VoidFuncOrNull = (() => boolean) | null;
+export type SingleArgBoolFuncOrNull<T> = (( arg: T) => boolean) | null;
+export type VoidFuncOrNull = (() => void) | null;
 
 
 export interface Callback {
-  onBeforeOpen: BoolFuncOrNull;
+  onBeforeOpen: SingleArgBoolFuncOrNull<string | Array<string>>;
   onOpen: VoidFuncOrNull;
-  onBeforeClose: BoolFuncOrNull;
+  onBeforeClose: SingleArgBoolFuncOrNull<string | Array<string>>;
   onClose: VoidFuncOrNull;
-  onBeforeChange: BoolFuncOrNull;
+  onBeforeChange: SingleArgBoolFuncOrNull<string>;
   onChange: VoidFuncOrNull;
   onFocus: VoidFuncOrNull;
   onBlur: VoidFuncOrNull;

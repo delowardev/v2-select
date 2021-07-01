@@ -34,14 +34,85 @@ const defaultOptions = {
         onFocus: null,
         onBlur: null,
         // keyboard
-        onKeyDown: null,
-        onKeyUp: null,
-        onKeyPress: null,
+        onKeyDown: null, //*
+        onKeyUp: null, //*
+        onKeyPress: null, //*
         // scroll
-        onMenuScrollTop: null,
-        onMenuScrollEnd: null
+        onMenuScrollTop: null, //*
+        onMenuScrollEnd: null //*
     }
 }
+```
+
+### Callbacks
+
+```typescript
+interface Callback {
+  onBeforeOpen: (( arg: string | Array<string>) => boolean) | null;
+  onBeforeClose: (( arg: string | Array<string>) => boolean) | null;
+  onBeforeChange: (( arg: string) => boolean) | null;
+  onOpen: (() => void) | null;
+  onClose: (() => void) | null;
+  onChange: (() => void) | null;
+  onFocus: (() => void) | null;
+  onBlur: (() => void) | null;
+  onKeyDown: (() => void) | null;
+  onKeyUp: (() => void) | null;
+  onKeyPress: (() => void) | null;
+  onMenuScrollTop: (() => void) | null;
+  onMenuScrollEnd: (() => void) | null;
+}
+
+options.callback = {
+  onBeforeOpen: null,
+  onOpen: null,
+  onBeforeClose: null,
+  onClose: null,
+  onBeforeChange: null,
+  onChange: null,
+  onFocus: null,
+  onBlur: null,
+  // keyboard
+  onKeyDown: null, //*
+  onKeyUp: null, //*
+  onKeyPress: null, //*
+  // scroll
+  onMenuScrollTop: null, //*
+  onMenuScrollEnd: null //*
+}
+
+// Note: on `onBeforeOpen`, `onBeforeClose`, and `onBeforeChange` you can return false to prevent next action.
+
+// Example:
+
+options.callback.onBeforeOpen = function (currentValue) {
+  if (currentValue === 'something') {
+    return false; // it will prevent next step
+  }
+  // do something
+}
+
+```
+
+### Events
+```typescript
+
+/**
+ 
+  `focus`: on focus select element
+  `blur`: on blur select element
+  `open`: after opening the menu
+  `close`: after opening the menu
+  `change`: after changing the select value
+ 
+ */
+
+// Example: 
+const events = selectInstance.Events;
+Events.addEventListener("open", () => {
+  // do something
+})
+
 ```
 
 ### Methods
