@@ -33,7 +33,7 @@ export interface StoreDaddy {
   addOption: SingleArgVoidFunc<OptionBase>;
   addOptions: ( arg: Options, arg2: boolean ) => void;
   setValues: SingleArgVoidFunc<string[]>;
-  setFocusedOption:  SingleArgVoidFunc<string>;
+  setFocusedOption:  SingleArgVoidFunc<string | null>;
   appendValue:  SingleArgVoidFunc<string>;
   clearByIndex: SingleArgVoidFunc<number>;
   clearValues: Function;

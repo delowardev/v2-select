@@ -7,7 +7,7 @@ export function createStore(): StoreDaddy {
   const value = writable("");
   const values = writable([]);
   const options = writable([]);
-  const focusedOption = writable("");
+  const focusedOption = writable(null);
 
   /**
    * Store Mutation/Setter
@@ -36,7 +36,7 @@ export function createStore(): StoreDaddy {
     values.update(() => v);
   }
   
-  function setFocusedOption( v: string ) {
+  function setFocusedOption( v: string | null ) {
     focusedOption.update(() => v)
   }
 

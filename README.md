@@ -110,7 +110,7 @@ options.callback.onBeforeOpen = function (currentValue) {
 
 // Example: 
 const events = selectInstance.Events;
-Events.addEventListener("open", () => {
+events.addEventListener("open", () => {
   // do something
 })
 

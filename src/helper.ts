@@ -1,5 +1,9 @@
 import type { OptionBase } from "./interface"
 
+export function findOptionIndex(options: OptionBase[], value: string): number {
+  return options.findIndex(option => option.value === value)
+}
+
 export function findText(options: OptionBase[], value: string): string {
   return options.find((option: OptionBase) => option.value === value)?.text || "";
 }

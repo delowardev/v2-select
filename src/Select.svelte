@@ -6,7 +6,7 @@
   import {fly, scale} from "svelte/transition";
   import ChevronDown from "./components/icons/ChevronDown.svelte";
   import Times from "./components/icons/Times.svelte";
-  import {findText, findMyOption} from "./helper";
+  import {findText, findMyOption, findOptionIndex} from "./helper";
   import type {BoolFunc, Callback, OptionProps, Options, SingleArgBoolFunc, SingleArgVoidFunc} from "./interface";
   import Search from "./Search.svelte";
   import {createStore} from "./store";
@@ -388,11 +388,11 @@
    */
 
   function _optionMouseEnter(e) {
-    setFocusedOption(e.target?.dataset?.value || "")
+    setFocusedOption(e.target?.dataset?.value || null)
   }
   
   function _dropdownMouseLeave() {
-    setFocusedOption("")
+    setFocusedOption(null)
   }
   
   
@@ -534,6 +534,33 @@
    * onBlur / mouseleave
    * @mouseevent
    */
+
+
+
+  function focusOptionByKey( dir ) {
+  
+    const index = findOptionIndex(options, focusedOption)
+  
+    const next = index + 1;
+    const prev = index - 1;
+  
+    if (focusedOption === null || index === -1) {
+      focusedOption = options[0].value;
+      return;
+    }
+  
+    if (dir === "down") {
+      focusedOption = next === options.length ? options[0].value : options[next].value;
+      return;
+    }
+  
+    if (dir === "up") {
+      focusedOption = prev < 0 ? options[options.length - 1].value : options[prev].value;
+      return;
+    }
+  
+  }
+  
   function cbMouseleave(e: MouseEvent) {
     if (e.target !== document.activeElement) _blur()
   }
@@ -568,15 +595,12 @@
     
     // up and down
     if (e.code === "ArrowDown") {
-    
+      focusOptionByKey("down");
     }
     
     if (e.code === "ArrowUp") {
-    
+      focusOptionByKey("up");
     }
-    
-    
-    
     
     
   }
