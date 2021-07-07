@@ -379,6 +379,9 @@
   }
 
   function _search(value: string) {
+    if (value && !open) {
+      _open();
+    }
     return setSearch(value)
   }
   
