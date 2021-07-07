@@ -6,6 +6,7 @@
   
   export let search: string;
   export let right: boolean;
+  export let isOpen: boolean;
   // elem binding
   let elem: HTMLSpanElement;
   
@@ -22,21 +23,28 @@
     });
   }
   
-  function onDelete(e) {
-    let char = (typeof e !== 'undefined') ? e.keyCode : e.which
-    if (char === 8 && !search) {
+  function onKeyDown(e) {
+    // dispatch "backspace" event
+    if (e.code === "Backspace" && !search) {
       dispatch("backspace");
+    }
+    
+    // prevent if it's not opened
+    if (e.code === "Space") {
+      if (!search && !isOpen) {
+        e.preventDefault();
+      }
     }
   }
   
   function bindEvents () {
     dispatch("focus")
-    elem.addEventListener("keydown", onDelete);
+    elem.addEventListener("keydown", onKeyDown);
   }
   
   function unbindEvents () {
     dispatch("blur")
-    elem.removeEventListener("keydown", onDelete);
+    elem.removeEventListener("keydown", onKeyDown);
   }
 
 </script>

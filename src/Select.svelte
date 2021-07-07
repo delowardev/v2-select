@@ -251,7 +251,7 @@
    */
   function _open() {
     if (open) return false
-  
+    
     // callback onBeforeOpen
     if (onBeforeOpen instanceof Function) {
       const val = multiple ? values : value;
@@ -414,7 +414,6 @@
   
   function _onSearchFocus() {
     searchFocused = true;
-    _open()
   }
   
   function _onSearchBlur() {
@@ -724,6 +723,7 @@
                 on:backspace={_backspace}
                 on:focus={_onSearchFocus}
                 on:blur={_onSearchBlur}
+                isOpen={open}
               />
             {/if}
           </div>
@@ -737,6 +737,7 @@
               on:backspace={_backspace}
               on:focus={_onSearchFocus}
               on:blur={_onSearchBlur}
+              isOpen={open}
             />
           {/if}
           {#if !searchText}
@@ -753,6 +754,7 @@
             on:backspace={_backspace}
             on:focus={_onSearchFocus}
             on:blur={_onSearchBlur}
+            isOpen={open}
           />
         {/if}
         {#if !searchText}
