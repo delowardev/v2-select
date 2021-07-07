@@ -256,11 +256,13 @@
     if (onBeforeOpen instanceof Function) {
       const val = multiple ? values : value;
       if (onBeforeOpen(val) !== false) {
+        focusOptionByKey("down");
         return open = true
       }
       return false
     }
   
+    focusOptionByKey("down");
     open = true
   
     Events.dispatchEvent(EVENT_OPEN);
