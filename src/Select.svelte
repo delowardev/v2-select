@@ -566,7 +566,6 @@
   }
   
   function cbKeyDown(e: KeyboardEvent) {
-    console.log(e.code)
     const target = e.target as HTMLButtonElement;
     const isSearch = target?.classList?.contains('v2select__search-skeleton');
     
@@ -584,7 +583,7 @@
     }
     
     // close menu
-    if (e.code === "Escape") {
+    if (e.code === "Escape" || e.code === "Tab") {
       _close()
     }
     
@@ -601,7 +600,6 @@
     if (e.code === "ArrowUp") {
       focusOptionByKey("up");
     }
-    
     
   }
 
@@ -683,7 +681,7 @@
     aria-haspopup="listbox"
     aria-expanded={open}
     on:click={_handleOnClickValue}
-    tabindex="0"
+    tabindex={ _options.search ? "-1" : "0" }
     bind:this={elemControl}
     class={clsx({
       'v2select__controls': true,
@@ -697,7 +695,7 @@
         {#if Array.isArray(values) && values.length}
           <div class="v2select__multi-values">
             {#each values as val, i}
-              <div tabindex="0" role="button" class="v2select__multi-value" in:fly>
+              <div tabindex="-1" role="button" class="v2select__multi-value" in:fly>
                 <span class="v2select__multi-label">
                   {#if (_options.renderValue)}
                     {@html _options.renderValue(
