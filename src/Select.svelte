@@ -106,7 +106,8 @@
   // refs
   let elemRoot: HTMLDivElement;
   let elemControl: HTMLDivElement;
-  let dropdownElem: HTMLUListElement;
+  let dropdownElemInner: HTMLUListElement;
+  let dropdownRootElem: HTMLDivElement;
   let elemSearch;
   
   // custom events
@@ -256,13 +257,13 @@
     if (onBeforeOpen instanceof Function) {
       const val = multiple ? values : value;
       if (onBeforeOpen(val) !== false) {
-        focusOptionByKey("down");
+        if ( focusedOption === null) focusOptionByKey("down");
         return open = true
       }
       return false
     }
   
-    focusOptionByKey("down");
+    if ( focusedOption === null) focusOptionByKey("down");
     open = true
   
     Events.dispatchEvent(EVENT_OPEN);
@@ -543,25 +544,52 @@
 
   function focusOptionByKey( dir ) {
   
-    const index = findOptionIndex(options, focusedOption)
+    const index = findOptionIndex(filteredOptions, focusedOption)
   
     const next = index + 1;
     const prev = index - 1;
   
     if (focusedOption === null || index === -1) {
-      focusedOption = options[0].value;
+      focusedOption = filteredOptions[0].value;
       return;
+    }
+    
+    let finalIndex = prev;
+    
+    if ( dir === "down" ) {
+      finalIndex = next >= filteredOptions.length ? 0 : next;
+    }
+    
+    if ( dir === "up" && prev < 0 ) {
+      finalIndex = filteredOptions.length - 1;
     }
   
-    if (dir === "down") {
-      focusedOption = next === options.length ? options[0].value : options[next].value;
-      return;
-    }
+    focusedOption = filteredOptions[finalIndex].value;
+    
+    if (dropdownElemInner) {
+      
+      const optionElem = dropdownElemInner.querySelectorAll("li")[finalIndex]
+      const rootRect = dropdownRootElem.getBoundingClientRect()
+      const optionRect = optionElem.getBoundingClientRect();
+      
   
-    if (dir === "up") {
-      focusedOption = prev < 0 ? options[options.length - 1].value : options[prev].value;
-      return;
+      if (rootRect.bottom < optionRect.bottom) {
+        const scrollTop = (optionRect.bottom - rootRect.bottom) * 2;
+        dropdownRootElem.scrollTo(0, scrollTop)
+        return;
+      }
+      
+      if (optionRect.top < rootRect.top) {
+        const scrollTop = rootRect.top - optionRect.top;
+        if (scrollTop > 0) {
+          dropdownRootElem.scrollTo(0, 0);
+        } else {
+          dropdownRootElem.scrollTo(0, scrollTop)
+        }
+      }
+      
     }
+    
   
   }
   
@@ -802,13 +830,16 @@
     </div>
   </div>
   {#if open}
-    <div in:fly class={clsx(
-      "v2select__dropdown",
-      _options.classes.dropdownRoot
-    )}>
+    <div
+      in:fly class={clsx(
+        "v2select__dropdown",
+        _options.classes.dropdownRoot
+      )}
+      bind:this={dropdownRootElem}
+    >
       <ul
         on:mouseleave={_dropdownMouseLeave}
-        bind:this={dropdownElem}
+        bind:this={dropdownElemInner}
         tabindex="-1"
         role="listbox"
         class="v2select__dropdown-inner"

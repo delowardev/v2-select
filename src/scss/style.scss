@@ -179,6 +179,7 @@ $danger-light: #ffbdad;
   padding: 4px 0;
   max-height: 300px;
   overflow: hidden auto;
+  scroll-behavior: smooth;
   .v2select__dropdown-inner {
     list-style: none;
     padding: 0;
