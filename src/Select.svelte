@@ -13,6 +13,7 @@
   import A11yText from "./A11yText.svelte";
   import { ariaLiveMessage } from "./accessibility"
   import type { GuidanceProps } from "./accessibility"
+  import uniqBy from "lodash.uniqby";
 
   /**
    * Constant
@@ -173,9 +174,9 @@
   }
 
   function getInitialOptions(): Options {
-    return Array.from(select.options).map(
+    return uniqBy(Array.from(select.options).map(
       ({value, text, disabled, dataset}) => ({value, text, disabled, dataset})
-    )
+    ), "value");
   }
 
   function getInitialValues(): String[] {
