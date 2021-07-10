@@ -569,26 +569,21 @@
     
     if (dropdownElemInner) {
       
-      const optionElem = dropdownElemInner.querySelectorAll("li")[finalIndex]
+      const optionElem = dropdownElemInner.querySelector(`[data-value=${focusedOption}]`)
       const rootRect = dropdownRootElem.getBoundingClientRect()
       const optionRect = optionElem.getBoundingClientRect();
       
-  
-      if (rootRect.bottom < optionRect.bottom) {
-        const scrollTop = (optionRect.bottom - rootRect.bottom) * 2;
-        dropdownRootElem.scrollTo(0, scrollTop)
+      if ( rootRect.bottom < optionRect.bottom +  optionRect.height) {
+        const scrollYTo = - (rootRect.bottom - optionRect.bottom - optionRect.height - dropdownRootElem.scrollTop)
+        dropdownRootElem.scrollTo(0, scrollYTo)
         return;
       }
-      
-      if (optionRect.top < rootRect.top) {
-        const scrollTop = rootRect.top - optionRect.top;
-        if (scrollTop > 0) {
-          dropdownRootElem.scrollTo(0, 0);
-        } else {
-          dropdownRootElem.scrollTo(0, scrollTop)
-        }
-      }
-      
+    
+    if (rootRect.top > optionRect.top - optionRect.height) {
+      const scrollYTo = - (rootRect.top - optionRect.top - dropdownRootElem.scrollTop + optionRect.height);
+      dropdownRootElem.scrollTo(0, scrollYTo)
+    }
+    
     }
     
   
