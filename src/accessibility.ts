@@ -50,7 +50,7 @@ export const ariaLiveMessage: AriaLiveMessage = {
     const { disabled, context, selected, searchable, multiple } = props;
     switch (context) {
       case "root":
-        return `Select is focused, press Space or Enter to open menu`;
+        return `Select is focused, press Enter to open menu`;
       case "menu":
         return 'Use Up and Down to choose options' +
             (disabled ? '' : ', press Enter to select the currently focused option') +

@@ -53,6 +53,7 @@
     renderOption: null,
     renderValue: null,
     clearable: true,
+    placement: "bottom",
     callback: {
       onBeforeOpen: null,
       onOpen: null,
@@ -320,8 +321,6 @@
   function _focus() {
     
     if (focused) return false;
-    
-    const { guidance } = ariaLiveMessage
   
     focused = true;
   
@@ -331,7 +330,14 @@
     }
   
     Events.dispatchEvent(EVENT_FOCUS);
-    
+  
+    a11yFocus()
+  
+    return true
+  }
+  
+  function a11yFocus() {
+  
     const props = <GuidanceProps> {
       label: "",
       disabled: false,
@@ -341,9 +347,12 @@
       selected: true
     }
     
-    ariaSelected = guidance(props);
+    ariaSelected = ariaLiveMessage.guidance(props);
+  }
   
-    return true
+  function a11yClean() {
+    ariaSelected = "";
+    ariaContext = "";
   }
 
   /**
@@ -360,6 +369,8 @@
     }
   
     Events.dispatchEvent(EVENT_BLUR);
+  
+    a11yClean()
   
     return false
   }
@@ -418,10 +429,12 @@
   }
   
   function _onSearchFocus() {
+    a11yFocus()
     searchFocused = true;
   }
   
   function _onSearchBlur() {
+    a11yClean()
     searchFocused = false;
   }
 
@@ -534,13 +547,10 @@
     _focus()
   }
 
+
   /**
-   * onBlur / mouseleave
-   * @mouseevent
+   * Keyboard arrowDown/up
    */
-
-
-
   function focusOptionByKey( dir ) {
   
     const index = findOptionIndex(filteredOptions, focusedOption)
@@ -565,6 +575,7 @@
   
     focusedOption = filteredOptions[finalIndex].value;
     
+    // auto scroll up/down
     if (dropdownElemInner) {
       
       const optionElem = dropdownElemInner.querySelector(`[data-value=${focusedOption}]`)
@@ -584,10 +595,21 @@
     
     }
   }
-  
+
+  /**
+   * onBlur / mouseleave
+   * @mouseevent
+   */
+
+
   function cbMouseleave(e: MouseEvent) {
     if (e.target !== document.activeElement) _blur()
   }
+  
+  /**
+   * onKeyDown callback
+   * @mouseevent
+   */
   
   function cbKeyDown(e: KeyboardEvent) {
     const target = e.target as HTMLButtonElement;
@@ -627,6 +649,9 @@
     
   }
   
+  /**
+   * Make sure control/search is focused
+   */
   function reFocus() {
     if (elemSearch && elemControl) {
       if (_options.search) {

@@ -83,4 +83,5 @@ export interface OptionProps {
   renderValue: (string, dataset: DOMStringMap) => string | null;
   clearable: boolean;
   callback: Callback;
+  placement: "top" | "bottom";
 }
