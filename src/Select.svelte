@@ -137,6 +137,7 @@
     values = v;
     getFilteredOptions();
     updateMultiSelectElem();
+    reFocus()
   });
   
   stateFocusedOption.subscribe(v => {
@@ -624,6 +625,16 @@
       focusOptionByKey("up");
     }
     
+  }
+  
+  function reFocus() {
+    if (elemSearch && elemControl) {
+      if (_options.search) {
+        elemSearch.focus()
+      } else {
+        elemControl.focus()
+      }
+    }
   }
 
   /**
