@@ -66,9 +66,6 @@
       onKeyDown: null,
       onKeyUp: null,
       onKeyPress: null,
-      // scroll
-      onMenuScrollTop: null,
-      onMenuScrollEnd: null
     }
   }
 
@@ -579,14 +576,12 @@
         return;
       }
     
-    if (rootRect.top > optionRect.top - optionRect.height) {
-      const scrollYTo = - (rootRect.top - optionRect.top - dropdownRootElem.scrollTop + optionRect.height);
-      dropdownRootElem.scrollTo(0, scrollYTo)
-    }
+      if (rootRect.top > optionRect.top - optionRect.height) {
+        const scrollYTo = - (rootRect.top - optionRect.top - dropdownRootElem.scrollTop + optionRect.height);
+        dropdownRootElem.scrollTo(0, scrollYTo)
+      }
     
     }
-    
-  
   }
   
   function cbMouseleave(e: MouseEvent) {

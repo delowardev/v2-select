@@ -76,9 +76,6 @@ options.callback = {
   onKeyDown: null, //*
   onKeyUp: null, //*
   onKeyPress: null, //*
-  // scroll
-  onMenuScrollTop: null, //*
-  onMenuScrollEnd: null //*
 }
 
 // Note: on `onBeforeOpen`, `onBeforeClose`, and `onBeforeChange` 

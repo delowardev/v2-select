@@ -66,8 +66,6 @@ export interface Callback {
   onKeyDown: VoidFuncOrNull;
   onKeyUp: VoidFuncOrNull;
   onKeyPress: VoidFuncOrNull;
-  onMenuScrollTop: VoidFuncOrNull;
-  onMenuScrollEnd: VoidFuncOrNull;
 }
 
 export interface OptionProps {
