@@ -586,7 +586,20 @@
     // focus and toggle menu
     if (e.code === "Enter") {
       e.preventDefault()
-      _toggle()
+      _open()
+      
+      
+      if (focusedOption) {
+        const index = findOptionIndex(filteredOptions, focusedOption);
+        _select(focusedOption)
+        if (filteredOptions.length) {
+          focusedOption =
+            filteredOptions[index] ?
+            filteredOptions[index].value :
+            filteredOptions[filteredOptions.length - 1].value
+        }
+      }
+      
     }
     
     if (e.code === "Space") {
