@@ -182,7 +182,11 @@
 
   function _select(value) {
     
-  
+    if (findMyOption(filteredOptions, value)?.disabled) {
+      return
+    }
+    
+    
     // callback onBeforeChange
     if (
       onBeforeChange instanceof Function &&
@@ -546,7 +550,7 @@
     // auto scroll up/down
     if (dropdownElemInner) {
       
-      const optionElem = dropdownElemInner.querySelector(`[data-value=${focusedOption}]`)
+      const optionElem = dropdownElemInner.querySelector(`[data-value="${focusedOption}"]`)
       const rootRect = dropdownRootElem.getBoundingClientRect()
       const optionRect = optionElem.getBoundingClientRect();
       
