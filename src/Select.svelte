@@ -8,12 +8,13 @@
   import Times from "./components/icons/Times.svelte";
   import {findText, findMyOption, findOptionIndex} from "./helper";
   import type {BoolFunc, Callback, OptionProps, Options, SingleArgBoolFunc, SingleArgVoidFunc} from "./interface";
-  import Search from "./Search.svelte";
+  import Search from "./components/Search.svelte";
   import {createStore} from "./store";
-  import A11yText from "./A11yText.svelte";
+  import A11yText from "./components/A11yText.svelte";
   import { ariaLiveMessage } from "./accessibility"
   import type { GuidanceProps } from "./accessibility"
   import uniqBy from "lodash.uniqby";
+  import { defaultOptions } from "./constant"
 
   /**
    * Constant
@@ -36,40 +37,7 @@
     options: stateOptions,
     focusedOption: stateFocusedOption
   } = createStore();
-
   
-
-  // Default options
-  const defaultOptions: OptionProps = {
-    classes: {
-      container: "",
-      controls: "",
-      dropdownRoot: "",
-      dropdown: ""
-    },
-    placeholder: "Select",
-    search: true,
-    noResultsText: "No options found!",
-    renderOption: null,
-    renderValue: null,
-    clearable: true,
-    placement: "bottom",
-    callback: {
-      onBeforeOpen: null,
-      onOpen: null,
-      onBeforeClose: null,
-      onClose: null,
-      onBeforeChange: null,
-      onChange: null,
-      onFocus: null,
-      onBlur: null,
-      // keyboard
-      onKeyDown: null,
-      onKeyUp: null,
-      onKeyPress: null,
-    }
-  }
-
   /**
    * Props
    */

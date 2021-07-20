@@ -66,5 +66,5 @@
 
 
 <style type="text/scss">
-  @import "scss/search.scss";
+  @import "../scss/search";
 </style>
