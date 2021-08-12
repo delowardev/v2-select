@@ -706,12 +706,13 @@
       !!value
     )
   )
+  
+  $: placement = _options.placement === "top" ? "v2select__place-top" : "v2select__place-bottom";
 
 
 </script>
 
-<div bind:this={elemRoot} class={clsx({
-    'v2select': true,
+<div bind:this={elemRoot} class={clsx('v2select', {
     v2select__multiple: multiple,
     v2select__single: !multiple,
     [_options.classes.container]: !!_options.classes.container
@@ -847,7 +848,8 @@
     <div
       in:fly class={clsx(
         "v2select__dropdown",
-        _options.classes.dropdownRoot
+        _options.classes.dropdownRoot,
+        placement
       )}
       bind:this={dropdownRootElem}
     >

@@ -4,10 +4,11 @@ $color-grey-light: #e6e6e6;
 $color-grey: #cccccc;
 $color-grey-dark: #999999;
 $color-grey-darker: #666666;
-$color-primary: #2684FC;
-$color-primary-light: rgba(38, 132, 252, 0.2);
+//$color-primary: #2684FC;
+$color-primary: #80bdff;
+$color-primary-light: rgba($color-primary, 0.5);
 $transition: 200ms;
-$color-text: #333333;
+$color-text: rgba(0, 0, 0, 0.87);
 $color-placeholder: #808080;
 
 $danger: #de350b;
@@ -38,7 +39,7 @@ $danger-light: #ffbdad;
     &.v2select__controls--is-focused,
     &.v2select__controls--is-selected {
       border-color: $color-primary;
-      box-shadow: $color-primary 0 0 0 1px;
+      box-shadow: 0 0 0 3px rgba($color-primary, .25);
       .v2select__buttons .v2select__btn {
         color: $color-grey-darker;
       }
@@ -173,13 +174,19 @@ $danger-light: #ffbdad;
   z-index: 999;
   background: white;
   border: 1px solid $color-grey;
-  margin-top: 5px;
+  margin: 5px 0;
   border-radius: $radius;
   box-shadow: 0 0 10px rgba(black, .1);
   padding: 4px 0;
   max-height: 300px;
   overflow: hidden auto;
   scroll-behavior: smooth;
+
+  &.v2select__place-top {
+    top: auto;
+    bottom: 100%;
+  }
+
   .v2select__dropdown-inner {
     list-style: none;
     padding: 0;
@@ -196,16 +203,15 @@ $danger-light: #ffbdad;
       border-radius: 0;
       transition: $transition;
       cursor: pointer;
-      &.v2select__dropdown--is-focused {
-        background: rgba($color-primary, .2);
+      &.v2select__dropdown--is-focused:not(.v2select__dropdown--is-disabled) {
+        background: rgba(0, 0, 0, 0.12);
       }
       &.v2select__dropdown--selected {
-        color: white;
-        background: $color-primary;
+        background: rgba(0, 0, 0, 0.12);
       }
       &.v2select__dropdown--is-disabled {
-        opacity: .4;
         cursor: not-allowed;
+        opacity: .5;
       }
     }
     .v2select__dropdown-placeholder {
